@@ -21,6 +21,7 @@ import {
 import ProfilePictureComponent from "./ProfilePictureComponent";
 import { getData, storeData } from "../lib/storage";
 import { useDispatch } from "react-redux";
+import SignUpScreen from "../screens/SignUpScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -31,6 +32,13 @@ const AuthStackScreen = () => {
       <Stack.Screen
         name="Login"
         component={AuthScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUpScreen}
         options={{
           headerShown: false,
         }}

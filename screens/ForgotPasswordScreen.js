@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Alert, StatusBar } from "react-native";
+import { View, Text, TextInput, Alert, StatusBar, Image } from "react-native";
 import { Button } from "react-native-paper";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import authStyles from "../styles/authStyles";
@@ -33,7 +33,13 @@ const ForgotPasswordScreen = ({ navigation }) => {
       <StatusBar translucent backgroundColor="transparent" />
 
       <View style={authStyles.overlay}>
-        <Text style={authStyles.logo}>Forgot Password</Text>
+        <View style={authStyles.headerContainer}>
+              <Image
+                source={require("../assets/forgot.png")}
+                style={authStyles.image}
+              />
+              <Text style={authStyles.logo}>Reset your Password</Text>
+            </View>
 
         <View style={authStyles.inputContainer}>
           <TextInput
@@ -41,7 +47,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
             placeholder="Email"
             onChangeText={setEmail}
           />
-          <Button style={{ alignSelf: "flex-start" }} onPress={handleLoginBtn}>
+          <Button style={authStyles.helpButton} onPress={handleLoginBtn}>
             Back to Login
           </Button>
         </View>

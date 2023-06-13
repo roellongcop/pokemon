@@ -25,15 +25,14 @@ import {
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyA_5H0LBQJ4LBAP8yy2K0EpKineGO1G89w",
-  authDomain: "bdoledger.firebaseapp.com",
-  projectId: "bdoledger",
-  storageBucket: "bdoledger.appspot.com",
-  messagingSenderId: "692616546995",
-  appId: "1:692616546995:web:ead2ecbc7fb152439a7ec6",
-  measurementId: "G-98NCBSNHEJ",
-  databaseURL:
-    "https://bdoledger-default-rtdb.asia-southeast1.firebasedatabase.app/",
+  apiKey: "AIzaSyBxrMm9d1h5vzkuN3GAyGPAY_gE_swu73I",
+  authDomain: "pokemon-catcher-3fa2d.firebaseapp.com",
+  projectId: "pokemon-catcher-3fa2d",
+  storageBucket: "pokemon-catcher-3fa2d.appspot.com",
+  messagingSenderId: "376920741265",
+  appId: "1:376920741265:web:227d6aa22ba88474f13630",
+  measurementId: "G-XZ8JJE681W",
+  databaseURL: "https://pokemon-catcher-3fa2d-default-rtdb.asia-southeast1.firebasedatabase.app/",
 };
 
 // Initialize Firebase

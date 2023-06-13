@@ -5,11 +5,6 @@ const authStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-  background: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "center",
-  },
   overlay: {
     flex: 1,
     backgroundColor: "#eaeaea",
@@ -21,7 +16,8 @@ const authStyles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "#555",
-    marginBottom: 50,
+    marginBottom: 40,
+    marginTop: 10,
   },
   inputContainer: {
     marginBottom: 20,
@@ -34,18 +30,28 @@ const authStyles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 15,
   },
-  button: {
-    width: 300,
-    height: 40,
-    backgroundColor: "#337ab7",
+  contentContainerStyle: {
+    flexGrow: 1,
     justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 5,
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+  headerContainer: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  image: {
+    width: 50,
+    height: 50,
+    marginRight: 5,
+  },
+  helpButton: {
+    alignSelf: "flex-start",
+    marginLeft: -10
+  },
+  mainButton: { width: "90%", maxWidth: 350 },
+  mainButtonLabel: { color: "#fff" },
+  bottomLink: {
+    position: "absolute",
+    bottom: 20,
   },
 });
 

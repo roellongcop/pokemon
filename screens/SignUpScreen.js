@@ -8,17 +8,19 @@ import {
   ScrollView,
   SafeAreaView,
   Image,
-  TouchableOpacity,
 } from "react-native";
 import { Button, Snackbar } from "react-native-paper";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import authStyles from "../styles/authStyles";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { getData, storeData } from "../lib/storage";
 import NetInfo from "@react-native-community/netinfo";
 
-const AuthScreen = ({ navigation }) => {
+const SignUpScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const auth = getAuth();
 
@@ -29,20 +31,21 @@ const AuthScreen = ({ navigation }) => {
   const [snackbar, setSnackbar] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
 
-  const handleSignIn = (callback = () => {}) => {
+  const handleSignUp = () => {
     setLoading(true);
-    signInWithEmailAndPassword(auth, email, password)
+    createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         setLoading(false);
-        const user = userCredential.user || null;
+        const user = userCredential.user;
 
         dispatch({ type: "user/setUser", payload: user });
         storeData("user", user);
         storeData("userCredential", { email, password });
-        callback();
+
+        setSnackMessage(code);
+        setSnackbar(true);
       })
       .catch((error) => {
-        callback();
         setLoading(false);
         const { code } = error;
         setSnackMessage(code);
@@ -50,37 +53,17 @@ const AuthScreen = ({ navigation }) => {
       });
   };
 
-  const handleForgotPassword = () => {
-    navigation.navigate("ForgotPassword");
+  const handleBackToLogin = () => {
+    navigation.navigate("Login");
   };
 
   const handleRefresh = () => {
     setRefreshing(true);
-    getData("userCredential").then((credential) => {
-      if (credential) {
-        const { email, password } = credential;
-
-        setEmail(email);
-        setPassword(password);
-        NetInfo.fetch().then((state) => {
-          if (state.isConnected) {
-            handleSignIn(() => {
-              setRefreshing(false);
-            });
-          } else {
-            setRefreshing(false);
-            setSnackMessage("No internet");
-            setSnackbar(true);
-          }
-        });
-      } else {
-        setRefreshing(false);
-      }
-    });
-  };
-
-  const handleCreateAccount = () => {
-    navigation.navigate("SignUp");
+    setTimeout(() => {
+      setEmail("");
+      setPassword("");
+      setRefreshing(false);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -105,10 +88,10 @@ const AuthScreen = ({ navigation }) => {
           <View style={authStyles.overlay}>
             <View style={authStyles.headerContainer}>
               <Image
-                source={require("../assets/login.png")}
+                source={require("../assets/signup.png")}
                 style={authStyles.image}
               />
-              <Text style={authStyles.logo}>Sign In your Account</Text>
+              <Text style={authStyles.logo}>Create your Account</Text>
             </View>
 
             <View style={authStyles.inputContainer}>
@@ -126,9 +109,10 @@ const AuthScreen = ({ navigation }) => {
 
               <Button
                 style={authStyles.helpButton}
-                onPress={handleForgotPassword}
+                labelStyle={authStyles.helpButtonLabel}
+                onPress={handleBackToLogin}
               >
-                Forgot Password?
+                Back to Login
               </Button>
             </View>
 
@@ -138,18 +122,12 @@ const AuthScreen = ({ navigation }) => {
               loading={loading}
               buttonColor="#337ab7"
               mode="contained"
-              icon="login"
+              icon="pencil"
               labelStyle={authStyles.mainButtonLabel}
-              onPress={handleSignIn}
+              onPress={handleSignUp}
             >
-              Sign In
+              Create Account
             </Button>
-
-            <View style={authStyles.bottomLink}>
-              <Button onPress={handleCreateAccount}>
-                Don't have an account?
-              </Button>
-            </View>
 
             <Snackbar
               visible={snackbar}
@@ -173,4 +151,4 @@ const AuthScreen = ({ navigation }) => {
   );
 };
 
-export default AuthScreen;
+export default SignUpScreen;

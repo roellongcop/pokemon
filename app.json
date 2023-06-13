@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "bdoledger",
-    "slug": "bdoledger",
+    "name": "pokemon-catcher",
+    "slug": "pokemon-catcher",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,7 +22,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.roelsoftwaredeveloper.bdoledger"
+      "package": "com.longcoproel.pokemon-catcher"
     },
     "web": {
       "favicon": "./assets/favicon.png"
