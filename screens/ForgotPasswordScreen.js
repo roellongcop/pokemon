@@ -57,7 +57,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
           loading={loading}
           buttonColor="#337ab7"
           mode="contained"
-          icon="login"
+          icon="email-fast-outline"
           labelStyle={{ color: "#fff" }}
           onPress={handleResetPassword}
         >
