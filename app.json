@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "pokemon-catcher",
+    "name": "Pokemon Catcher",
     "slug": "pokemon-catcher",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -22,7 +22,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.longcoproel.pokemon-catcher"
+      "package": "com.longcoproel.pokemon_catcher"
     },
     "web": {
       "favicon": "./assets/favicon.png"

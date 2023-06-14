@@ -8,7 +8,6 @@ import {
   ScrollView,
   SafeAreaView,
   Image,
-  TouchableOpacity,
 } from "react-native";
 import { Button, Snackbar } from "react-native-paper";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
@@ -29,6 +28,11 @@ const AuthScreen = ({ navigation }) => {
   const [snackbar, setSnackbar] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
 
+  const showSnackBar = (message) => {
+    setSnackMessage(message);
+    setSnackbar(true);
+  };
+
   const handleSignIn = (callback = () => {}) => {
     setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
@@ -45,8 +49,7 @@ const AuthScreen = ({ navigation }) => {
         callback();
         setLoading(false);
         const { code } = error;
-        setSnackMessage(code);
-        setSnackbar(true);
+        showSnackBar(code);
       });
   };
 
@@ -56,25 +59,27 @@ const AuthScreen = ({ navigation }) => {
 
   const handleRefresh = () => {
     setRefreshing(true);
-    getData("userCredential").then((credential) => {
-      if (credential) {
-        const { email, password } = credential;
+    setEmail('');
+    setPassword('');
+    NetInfo.fetch().then((state) => {
+      if (state.isConnected) {
+        getData("userCredential").then((credential) => {
+          if (credential) {
+            const { email, password } = credential;
 
-        setEmail(email);
-        setPassword(password);
-        NetInfo.fetch().then((state) => {
-          if (state.isConnected) {
+            setEmail(email);
+            setPassword(password);
+
             handleSignIn(() => {
               setRefreshing(false);
             });
           } else {
             setRefreshing(false);
-            setSnackMessage("No internet");
-            setSnackbar(true);
           }
         });
       } else {
         setRefreshing(false);
+        showSnackBar("No internet");
       }
     });
   };
@@ -86,8 +91,7 @@ const AuthScreen = ({ navigation }) => {
   useEffect(() => {
     NetInfo.fetch().then((state) => {
       if (!state.isConnected) {
-        setSnackMessage("No internet");
-        setSnackbar(true);
+        showSnackBar("No internet");
       }
     });
   }, []);
@@ -113,11 +117,13 @@ const AuthScreen = ({ navigation }) => {
 
             <View style={authStyles.inputContainer}>
               <TextInput
+                value={email}
                 style={authStyles.input}
                 placeholder="Email"
                 onChangeText={setEmail}
               />
               <TextInput
+                value={password}
                 style={authStyles.input}
                 placeholder="Password"
                 onChangeText={setPassword}

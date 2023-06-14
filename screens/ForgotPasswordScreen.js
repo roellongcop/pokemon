@@ -1,17 +1,43 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, Alert, StatusBar, Image } from "react-native";
-import { Button } from "react-native-paper";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Alert,
+  StatusBar,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
+import { Button, Snackbar } from "react-native-paper";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import authStyles from "../styles/authStyles";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import NetInfo from "@react-native-community/netinfo";
 
 const ForgotPasswordScreen = ({ navigation }) => {
   const auth = getAuth();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [snackbar, setSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
 
   const handleLoginBtn = () => {
     navigation.navigate("Login");
+  };
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+
+    setEmail("");
+    setRefreshing(false);
+  };
+
+  const showSnackBar = (message) => {
+    setSnackMessage(message);
+    setSnackbar(true);
   };
 
   const handleResetPassword = () => {
@@ -19,21 +45,36 @@ const ForgotPasswordScreen = ({ navigation }) => {
     sendPasswordResetEmail(auth, email)
       .then(() => {
         setLoading(false);
-        Alert.alert("Success", "Password reset email sent");
+        showSnackBar("Password reset email sent");
       })
       .catch((error) => {
         setLoading(false);
         const { code } = error;
-        Alert.alert("Error", code);
+        showSnackBar(code);
       });
   };
 
-  return (
-    <View style={authStyles.container}>
-      <StatusBar translucent backgroundColor="transparent" />
+  useEffect(() => {
+    NetInfo.fetch().then((state) => {
+      if (!state.isConnected) {
+        showSnackBar("No internet");
+      }
+    });
+  }, []);
 
-      <View style={authStyles.overlay}>
-        <View style={authStyles.headerContainer}>
+  return (
+    <SafeAreaView style={authStyles.container}>
+      <ScrollView
+        contentContainerStyle={authStyles.contentContainerStyle}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
+        <View style={authStyles.container}>
+          <StatusBar translucent backgroundColor="transparent" />
+
+          <View style={authStyles.overlay}>
+            <View style={authStyles.headerContainer}>
               <Image
                 source={require("../assets/forgot.png")}
                 style={authStyles.image}
@@ -41,31 +82,49 @@ const ForgotPasswordScreen = ({ navigation }) => {
               <Text style={authStyles.logo}>Reset your Password</Text>
             </View>
 
-        <View style={authStyles.inputContainer}>
-          <TextInput
-            style={authStyles.input}
-            placeholder="Email"
-            onChangeText={setEmail}
-          />
-          <Button style={authStyles.helpButton} onPress={handleLoginBtn}>
-            Back to Login
-          </Button>
-        </View>
+            <View style={authStyles.inputContainer}>
+              <TextInput
+                value={email}
+                style={authStyles.input}
+                placeholder="Email"
+                onChangeText={setEmail}
+              />
+              <Button style={authStyles.helpButton} onPress={handleLoginBtn}>
+                Back to Login
+              </Button>
+            </View>
 
-        <Button
-          disabled={loading}
-          loading={loading}
-          buttonColor="#337ab7"
-          mode="contained"
-          icon="email-fast-outline"
-          labelStyle={{ color: "#fff" }}
-          onPress={handleResetPassword}
-        >
-          Reset Password
-        </Button>
-      </View>
-      <ExpoStatusBar style="auto" />
-    </View>
+            <Button
+              disabled={loading}
+              loading={loading}
+              buttonColor="#337ab7"
+              mode="contained"
+              icon="email-fast-outline"
+              labelStyle={{ color: "#fff" }}
+              onPress={handleResetPassword}
+            >
+              Reset Password
+            </Button>
+
+            <Snackbar
+              visible={snackbar}
+              onDismiss={() => {
+                setSnackbar(false);
+              }}
+              action={{
+                label: "OK",
+                onPress: () => {
+                  setSnackbar(false);
+                },
+              }}
+            >
+              {snackMessage}
+            </Snackbar>
+          </View>
+          <ExpoStatusBar style="auto" />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

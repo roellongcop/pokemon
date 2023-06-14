@@ -12,10 +12,7 @@ import {
 import { Button, Snackbar } from "react-native-paper";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import authStyles from "../styles/authStyles";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { getData, storeData } from "../lib/storage";
 import NetInfo from "@react-native-community/netinfo";
@@ -31,6 +28,11 @@ const SignUpScreen = ({ navigation }) => {
   const [snackbar, setSnackbar] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
 
+  const showSnackBar = (message) => {
+    setSnackMessage(message);
+    setSnackbar(true);
+  };
+
   const handleSignUp = () => {
     setLoading(true);
     createUserWithEmailAndPassword(auth, email, password)
@@ -41,15 +43,11 @@ const SignUpScreen = ({ navigation }) => {
         dispatch({ type: "user/setUser", payload: user });
         storeData("user", user);
         storeData("userCredential", { email, password });
-
-        setSnackMessage(code);
-        setSnackbar(true);
       })
       .catch((error) => {
         setLoading(false);
         const { code } = error;
-        setSnackMessage(code);
-        setSnackbar(true);
+        showSnackBar(code);
       });
   };
 
@@ -59,18 +57,15 @@ const SignUpScreen = ({ navigation }) => {
 
   const handleRefresh = () => {
     setRefreshing(true);
-    setTimeout(() => {
-      setEmail("");
-      setPassword("");
-      setRefreshing(false);
-    }, 1000);
+    setEmail("");
+    setPassword("");
+    setRefreshing(false);
   };
 
   useEffect(() => {
     NetInfo.fetch().then((state) => {
       if (!state.isConnected) {
-        setSnackMessage("No internet");
-        setSnackbar(true);
+        showSnackBar("No internet");
       }
     });
   }, []);
@@ -96,11 +91,13 @@ const SignUpScreen = ({ navigation }) => {
 
             <View style={authStyles.inputContainer}>
               <TextInput
+                value={email}
                 style={authStyles.input}
                 placeholder="Email"
                 onChangeText={setEmail}
               />
               <TextInput
+                value={password}
                 style={authStyles.input}
                 placeholder="Password"
                 onChangeText={setPassword}

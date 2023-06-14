@@ -2,26 +2,25 @@ import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
-import TransactionScreen from "../screens/TransactionScreen";
-import SettingScreen from "../screens/SettingScreen";
-import LogScreen from "../screens/LogScreen";
+import PokemonListScreen from "../screens/PokemonListScreen";
 import AuthScreen from "../screens/AuthScreen";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
-import { ActivityIndicator, Alert, View } from "react-native";
-
+import { ActivityIndicator, Alert, Image, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Ionicons from "@expo/vector-icons/Ionicons";
-
+import { app } from "../firebaseConfig";
 import {
   getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
-import ProfilePictureComponent from "./ProfilePictureComponent";
 import { getData, storeData } from "../lib/storage";
 import { useDispatch } from "react-redux";
-import SignUpScreen from "../screens/SignUpScreen";
+
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import SideDrawer from "./SideDrawer";
+
+const Drawer = createDrawerNavigator();
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -37,13 +36,6 @@ const AuthStackScreen = () => {
         }}
       />
       <Stack.Screen
-        name="SignUp"
-        component={SignUpScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
         name="ForgotPassword"
         component={ForgotPasswordScreen}
         options={{
@@ -54,58 +46,18 @@ const AuthStackScreen = () => {
   );
 };
 
-const HomeStackScreen = () => {
+const DashboardStackScreen = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          title: "BDO Ledger",
-          headerRight: () => <ProfilePictureComponent />,
-        }}
-      />
-      <Stack.Screen
-        name="Transaction"
-        component={TransactionScreen}
-        options={({ route }) => ({
-          title:
-            route.params && route.params.customTitle
-              ? route.params.customTitle
-              : "Add Transaction",
-          headerRight: () => <ProfilePictureComponent />,
-        })}
-      />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Home" component={HomeScreen} />
     </Stack.Navigator>
   );
 };
 
-const SettingStackScreen = () => {
+const PokemonStackScreen = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Setting"
-        component={SettingScreen}
-        options={{
-          title: "Setting",
-          headerRight: () => <ProfilePictureComponent />,
-        }}
-      />
-    </Stack.Navigator>
-  );
-};
-
-const LogStackScreen = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Log"
-        component={LogScreen}
-        options={{
-          title: "Transaction Logs",
-          headerRight: () => <ProfilePictureComponent />,
-        }}
-      />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="PokemonList" component={PokemonListScreen} />
     </Stack.Navigator>
   );
 };
@@ -159,49 +111,65 @@ const Navigation = () => {
   if (userData) {
     return (
       <NavigationContainer>
-        <Tab.Navigator>
-          <Tab.Screen
+        <Drawer.Navigator
+          drawerContent={(props) => <SideDrawer {...props} />}
+          screenOptions={{
+            drawerActiveBackgroundColor: "#e93e25",
+            drawerActiveTintColor: "#fff",
+            drawerInactiveTintColor: "#555",
+          }}
+        >
+          <Drawer.Screen
             name="Dashboard"
-            component={HomeStackScreen}
+            component={DashboardStackScreen}
             options={{
-              headerShown: false,
-              tabBarIcon: ({ color, size }) => {
-                return (
-                  <Ionicons name="home-outline" size={size} color={color} />
-                );
-              },
+              drawerIcon: ({ color }) => (
+                <Image
+                  style={{ width: 22, height: 22 }}
+                  source={require("../assets/icon.png")}
+                />
+              ),
             }}
           />
-
-          <Tab.Screen
-            name="Logs"
-            component={LogStackScreen}
-            options={({ route }) => ({
-              headerShown: false,
-              tabBarIcon: ({ color, size }) => {
-                return (
-                  <Ionicons
-                    name="newspaper-outline"
-                    size={size}
-                    color={color}
-                  />
-                );
-              },
-            })}
+          <Drawer.Screen
+            name="Pokemons"
+            component={PokemonStackScreen}
+            options={{
+              drawerIcon: ({ color }) => (
+                <Image
+                  style={{ width: 22, height: 22 }}
+                  source={require("../assets/forgot.png")}
+                />
+              ),
+            }}
           />
-          <Tab.Screen
-            name="Settings"
-            component={SettingStackScreen}
-            options={({ route }) => ({
-              headerShown: false,
-              tabBarIcon: ({ color, size }) => {
-                return (
-                  <Ionicons name="cog-outline" size={size} color={color} />
-                );
-              },
-            })}
+          <Drawer.Screen
+            name="PokemonCatchers"
+            component={PokemonStackScreen}
+            options={{
+              title: "Pokemon Catchers",
+              drawerIcon: ({ color }) => (
+                <Image
+                  style={{ width: 22, height: 22 }}
+                  source={require("../assets/signup.png")}
+                />
+              ),
+            }}
           />
-        </Tab.Navigator>
+          <Drawer.Screen
+            name="MyPokemons"
+            component={PokemonStackScreen}
+            options={{
+              title: "My Pokemons",
+              drawerIcon: ({ color }) => (
+                <Image
+                  style={{ width: 22, height: 22 }}
+                  source={require("../assets/login.png")}
+                />
+              ),
+            }}
+          />
+        </Drawer.Navigator>
       </NavigationContainer>
     );
   }
