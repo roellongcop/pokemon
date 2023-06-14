@@ -12,11 +12,28 @@ import {
 } from "@react-navigation/drawer";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAuth, signOut } from "firebase/auth";
+import { storeData } from "../lib/storage";
 
 const CustomDrawer = (props) => {
+  const auth = getAuth();
+  const dispatch = useDispatch();
+
   const { user } = useSelector((state) => state.USER);
+
+  const handleSignout = () => {
+    signOut(auth)
+      .then(() => {
+        dispatch({ type: "user/setUser", payload: null });
+        storeData("user", null);
+        storeData("userCredential", null);
+      })
+      .catch((error) => {
+        const { code } = error;
+        console.log('error', code);
+      });
+  }
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView
@@ -59,7 +76,7 @@ const CustomDrawer = (props) => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}} style={{ paddingVertical: 15 }}>
+        <TouchableOpacity onPress={handleSignout} style={{ paddingVertical: 15 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Ionicons name="exit-outline" size={22} />
             <Text
