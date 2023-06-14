@@ -24,7 +24,8 @@ const CustomDrawer = (props) => {
         contentContainerStyle={{ backgroundColor: "transparent" }}
       >
         <ImageBackground
-          source={require("../assets/drawer-bg.png")}
+          source={require("../assets/drawer-bg-2.png")}
+          resizeMode="cover"
         >
           <View
             style={{ backgroundColor: "rgba(0, 0, 0, 0.5)", marginTop: 120, padding: 20  }}
@@ -54,16 +55,18 @@ const CustomDrawer = (props) => {
           <DrawerItemList {...props} />
         </View>
       </DrawerContentScrollView>
-      <View style={{ padding: 20, borderTopWidth: 1, borderTopColor: "#ccc" }}>
+      <View style={{ padding: 20, borderTopWidth: 1, borderTopColor: "#eee"}}>
         <TouchableOpacity onPress={() => {}} style={{ paddingVertical: 15 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Ionicons name="share-social-outline" size={22} />
+            <Ionicons name="information-circle-outline" size={22} />
             <Text
               style={{
-                marginLeft: 5,
+                marginLeft: 30,
+                fontWeight: 'bold',
+                color: '#555'
               }}
             >
-              Tell a Friend
+              Learn More
             </Text>
           </View>
         </TouchableOpacity>
@@ -72,7 +75,9 @@ const CustomDrawer = (props) => {
             <Ionicons name="exit-outline" size={22} />
             <Text
               style={{
-                marginLeft: 5,
+                marginLeft: 30,
+                fontWeight: 'bold',
+                color: '#555'
               }}
             >
               Sign Out

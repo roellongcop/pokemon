@@ -125,7 +125,7 @@ const Navigation = () => {
             options={{
               drawerIcon: ({ color }) => (
                 <Image
-                  style={{ width: 22, height: 22 }}
+                  style={{ width: 30, height: 30 }}
                   source={require("../assets/icon.png")}
                 />
               ),
@@ -137,7 +137,7 @@ const Navigation = () => {
             options={{
               drawerIcon: ({ color }) => (
                 <Image
-                  style={{ width: 22, height: 22 }}
+                  style={{ width: 30, height: 30 }}
                   source={require("../assets/forgot.png")}
                 />
               ),
@@ -150,7 +150,7 @@ const Navigation = () => {
               title: "Pokemon Catchers",
               drawerIcon: ({ color }) => (
                 <Image
-                  style={{ width: 22, height: 22 }}
+                  style={{ width: 30, height: 30 }}
                   source={require("../assets/signup.png")}
                 />
               ),
@@ -163,7 +163,7 @@ const Navigation = () => {
               title: "My Pokemons",
               drawerIcon: ({ color }) => (
                 <Image
-                  style={{ width: 22, height: 22 }}
+                  style={{ width: 30, height: 30 }}
                   source={require("../assets/login.png")}
                 />
               ),
