@@ -3,8 +3,8 @@ import {
   View,
   Text,
   ImageBackground,
-  Image,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import {
   DrawerContentScrollView,
@@ -21,25 +21,14 @@ const CustomDrawer = (props) => {
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView
         {...props}
-        contentContainerStyle={{ backgroundColor: "transparent" }}
+        contentContainerStyle={styles.contentContainerStyle}
       >
         <ImageBackground
           source={require("../assets/drawer-bg-2.png")}
           resizeMode="cover"
         >
-          <View
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)", marginTop: 120, padding: 20  }}
-          >
-            <Text
-              style={{
-                color: "#fff",
-                fontSize: 18,
-                marginBottom: 5,
-                fontWeight: 'bold'
-              }}
-            >
-              {user?.email}
-            </Text>
+          <View style={styles.profileContainer}>
+            <Text style={styles.name}>{user?.email}</Text>
             <View style={{ flexDirection: "row" }}>
               <Text
                 style={{
@@ -55,15 +44,15 @@ const CustomDrawer = (props) => {
           <DrawerItemList {...props} />
         </View>
       </DrawerContentScrollView>
-      <View style={{ padding: 20, borderTopWidth: 1, borderTopColor: "#eee"}}>
+      <View style={{ padding: 20, borderTopWidth: 1, borderTopColor: "#eee" }}>
         <TouchableOpacity onPress={() => {}} style={{ paddingVertical: 15 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Ionicons name="information-circle-outline" size={22} />
             <Text
               style={{
                 marginLeft: 30,
-                fontWeight: 'bold',
-                color: '#555'
+                fontWeight: "bold",
+                color: "#555",
               }}
             >
               Learn More
@@ -76,8 +65,8 @@ const CustomDrawer = (props) => {
             <Text
               style={{
                 marginLeft: 30,
-                fontWeight: 'bold',
-                color: '#555'
+                fontWeight: "bold",
+                color: "#555",
               }}
             >
               Sign Out
@@ -90,3 +79,20 @@ const CustomDrawer = (props) => {
 };
 
 export default CustomDrawer;
+
+const styles = StyleSheet.create({
+  contentContainerStyle: {
+    backgroundColor: "transparent",
+  },
+  profileContainer: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    marginTop: 120,
+    padding: 20,
+  },
+  name: {
+    color: "#fff",
+    fontSize: 18,
+    marginBottom: 5,
+    fontWeight: "bold",
+  },
+});
