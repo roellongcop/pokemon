@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "../screens/HomeScreen";
-import PokemonListScreen from "../screens/PokemonListScreen";
-import AuthScreen from "../screens/AuthScreen";
-import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import { ActivityIndicator, Alert, Image, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { app } from "../firebaseConfig";
@@ -13,12 +9,15 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-
 import { getData, storeData } from "../lib/storage";
 import { useDispatch } from "react-redux";
-
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import SideDrawer from "./SideDrawer";
+import HomeScreen from "../screens/HomeScreen";
+import PokemonListScreen from "../screens/PokemonListScreen";
+import AuthScreen from "../screens/AuthScreen";
+import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
+import SignUpScreen from "../screens/SignUpScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -27,21 +26,11 @@ const Tab = createBottomTabNavigator();
 
 const AuthStackScreen = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Login"
-        component={AuthScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="ForgotPassword"
-        component={ForgotPasswordScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Login" component={AuthScreen} />
+
+      <Stack.Screen name="SignUp" component={SignUpScreen} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     </Stack.Navigator>
   );
 };
