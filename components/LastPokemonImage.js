@@ -15,8 +15,9 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { getAuth, signOut } from "firebase/auth";
 import { storeData } from "../lib/storage";
+import { firebaseSubscribe } from "../firebaseConfig";
 
-const SideDrawer = (props) => {
+const CustomDrawer = (props) => {
   const auth = getAuth();
   const dispatch = useDispatch();
 
@@ -35,6 +36,21 @@ const SideDrawer = (props) => {
       });
   };
 
+  useEffect(() => {
+    firebaseSubscribe(`users/${user.uid}`, (snapshot) => {
+      if (snapshot) {
+        const data = snapshot.val();
+
+        if (data) {
+          const transformedData = Object.entries(data).map(([key, value]) => ({
+            key,
+            ...value,
+          }));
+          dispatch({ type: "user/setPokemons", payload: transformedData });
+        }
+      }
+    });
+  }, []);
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView
@@ -99,21 +115,6 @@ const SideDrawer = (props) => {
   );
 };
 
-export default SideDrawer;
+export default CustomDrawer;
 
-const styles = StyleSheet.create({
-  contentContainerStyle: {
-    backgroundColor: "transparent",
-  },
-  profileContainer: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    marginTop: 120,
-    padding: 20,
-  },
-  name: {
-    color: "#fff",
-    fontSize: 18,
-    marginBottom: 5,
-    fontWeight: "bold",
-  },
-});
+

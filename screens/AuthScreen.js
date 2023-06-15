@@ -13,12 +13,13 @@ import { Button, Snackbar } from "react-native-paper";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import authStyles from "../styles/authStyles";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getData, storeData } from "../lib/storage";
 import NetInfo from "@react-native-community/netinfo";
 
 const AuthScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+  const { user, credential } = useSelector((state) => state.USER);
   const auth = getAuth();
 
   const [email, setEmail] = useState("");
@@ -39,10 +40,13 @@ const AuthScreen = ({ navigation }) => {
       .then((userCredential) => {
         setLoading(false);
         const user = userCredential.user || null;
+        const currentUser = {
+          user,
+          credential: { email, password },
+        };
 
-        dispatch({ type: "user/setUser", payload: user });
-        storeData("user", user);
-        storeData("userCredential", { email, password });
+        dispatch({ type: "user/setCurrentUser", payload: currentUser });
+        storeData("currentUser", currentUser);
         callback();
       })
       .catch((error) => {
@@ -59,24 +63,21 @@ const AuthScreen = ({ navigation }) => {
 
   const handleRefresh = () => {
     setRefreshing(true);
-    setEmail('');
-    setPassword('');
+    setEmail("");
+    setPassword("");
     NetInfo.fetch().then((state) => {
       if (state.isConnected) {
-        getData("userCredential").then((credential) => {
-          if (credential) {
-            const { email, password } = credential;
+        const { email, password } = credential;
+        if (email && password) {
+          setEmail(email);
+          setPassword(password);
 
-            setEmail(email);
-            setPassword(password);
-
-            handleSignIn(() => {
-              setRefreshing(false);
-            });
-          } else {
+          handleSignIn(() => {
             setRefreshing(false);
-          }
-        });
+          });
+        } else {
+          setRefreshing(false);
+        }
       } else {
         setRefreshing(false);
         showSnackBar("No internet");
@@ -146,7 +147,9 @@ const AuthScreen = ({ navigation }) => {
               mode="contained"
               icon="login"
               labelStyle={authStyles.mainButtonLabel}
-              onPress={handleSignIn}
+              onPress={() => {
+                handleSignIn();
+              }}
             >
               Sign In
             </Button>

@@ -1,23 +1,21 @@
-import { configureStore } from '@reduxjs/toolkit'
-import counterSlice from './slice/counterSlice';
-import transactionSlice from './slice/transactionSlice';
-import settingSlice from './slice/settingSlice';
-import logSlice from './slice/logSlice';
-import userSlice from './slice/userSlice';
-import { asyncFunctionMiddleware } from './middleware/asyncFunctionMiddleware';
+import { configureStore } from "@reduxjs/toolkit";
+import userSlice from "./slice/userSlice";
+import { asyncFunctionMiddleware } from "./middleware/asyncFunctionMiddleware";
+import { getData } from "../lib/storage";
 
 const store = configureStore({
   reducer: {
-    TRANSACTION: transactionSlice,
-    COUNTER: counterSlice,
-    SETTING: settingSlice,
-    LOG: logSlice,
     USER: userSlice,
   },
-  middleware: [
-    asyncFunctionMiddleware,
-  ],
+  middleware: [asyncFunctionMiddleware],
 });
 
+const loadUser = async (dispatch, state) => {
+  const currentUser = await getData("currentUser");
+
+  dispatch({ type: "user/setCurrentUser", payload: currentUser });
+};
+
+store.dispatch(loadUser);
 
 export default store;

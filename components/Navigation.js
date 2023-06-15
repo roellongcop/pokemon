@@ -10,7 +10,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { getData, storeData } from "../lib/storage";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import SideDrawer from "./SideDrawer";
 import HomeScreen from "../screens/HomeScreen";
@@ -52,36 +52,46 @@ const PokemonStackScreen = () => {
 };
 
 const Navigation = () => {
-  const [userData, setUserData] = useState(null);
   const auth = getAuth();
   const dispatch = useDispatch();
+  const { credential } = useSelector((state) => state.USER);
   const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState(null);
+
+  const checkLocalUser = () => {
+    const { email, password } = credential;
+    if (email && password) {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => { 
+          setLoading(false);
+          const user = userCredential.user || null;
+
+          const currentUser = {
+            user,
+            credential,
+          };
+
+          dispatch({ type: "user/setCurrentUser", payload: currentUser });
+          storeData("currentUser", currentUser);
+        })
+        .catch((error) => {
+          const { code } = error;
+          setLoading(false);
+          Alert.alert("Error", code);
+        });
+    } else {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    getData("userCredential").then((credential) => {
-      if (credential) {
-        const { email, password } = credential;
-        signInWithEmailAndPassword(auth, email, password)
-          .then((userCredential) => {
-            setLoading(false);
-            const user = userCredential.user || null;
+    checkLocalUser();
 
-            dispatch({ type: "user/setUser", payload: user });
-            storeData("user", user);
-            storeData("userCredential", { email, password });
-          })
-          .catch((error) => {
-            const { code } = error;
-            setLoading(false);
-            Alert.alert("Error", code);
-          });
-      } else {
-        setLoading(false);
-      }
-    });
     onAuthStateChanged(auth, (user) => {
       setUserData(user);
     });
+
+    return () => {};
   }, []);
 
   if (loading) {
@@ -112,6 +122,7 @@ const Navigation = () => {
             name="Dashboard"
             component={DashboardStackScreen}
             options={{
+              headerShown: false,
               drawerIcon: ({ color }) => (
                 <Image
                   style={{ width: 30, height: 30 }}

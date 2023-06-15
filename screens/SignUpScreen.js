@@ -16,6 +16,7 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { getData, storeData } from "../lib/storage";
 import NetInfo from "@react-native-community/netinfo";
+import { pushData } from "../firebaseConfig";
 
 const SignUpScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -33,16 +34,37 @@ const SignUpScreen = ({ navigation }) => {
     setSnackbar(true);
   };
 
+  const addStartPokemon = (user) => {
+    pushData({
+      link: `users/${user.uid}`,
+      data: { pokemon: 1 },
+    });
+    pushData({
+      link: `users/${user.uid}`,
+      data: { pokemon: 2 },
+    });
+    pushData({
+      link: `users/${user.uid}`,
+      data: { pokemon: 3 },
+    });
+  };
+
   const handleSignUp = () => {
     setLoading(true);
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        setLoading(false);
         const user = userCredential.user;
 
-        dispatch({ type: "user/setUser", payload: user });
-        storeData("user", user);
-        storeData("userCredential", { email, password });
+        addStartPokemon(user);
+
+        const currentUser = {
+          user,
+          credential: { email, password },
+        };
+
+        dispatch({ type: "user/setCurrentUser", payload: currentUser });
+        storeData("currentUser", currentUser);
+        setLoading(false);
       })
       .catch((error) => {
         setLoading(false);
