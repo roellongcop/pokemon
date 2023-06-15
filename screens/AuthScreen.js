@@ -19,7 +19,6 @@ import NetInfo from "@react-native-community/netinfo";
 
 const AuthScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { user, credential } = useSelector((state) => state.USER);
   const auth = getAuth();
 
   const [email, setEmail] = useState("");
@@ -40,13 +39,12 @@ const AuthScreen = ({ navigation }) => {
       .then((userCredential) => {
         setLoading(false);
         const user = userCredential.user || null;
-        const currentUser = {
+
+        dispatch({ type: "user/setUser", payload: user });
+        storeData("currentUser", {
           user,
           credential: { email, password },
-        };
-
-        dispatch({ type: "user/setCurrentUser", payload: currentUser });
-        storeData("currentUser", currentUser);
+        });
         callback();
       })
       .catch((error) => {
@@ -67,17 +65,21 @@ const AuthScreen = ({ navigation }) => {
     setPassword("");
     NetInfo.fetch().then((state) => {
       if (state.isConnected) {
-        const { email, password } = credential;
-        if (email && password) {
-          setEmail(email);
-          setPassword(password);
 
-          handleSignIn(() => {
+        getData("currentUser").then((currentUser) => {
+          if (currentUser) {
+            const { email, password } = currentUser.credential;
+            setEmail(email);
+            setPassword(password);
+  
+            handleSignIn(() => {
+              setRefreshing(false);
+            });
+          } else {
             setRefreshing(false);
-          });
-        } else {
-          setRefreshing(false);
-        }
+          }
+        });
+        
       } else {
         setRefreshing(false);
         showSnackBar("No internet");

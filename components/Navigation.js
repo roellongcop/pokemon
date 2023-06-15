@@ -59,29 +59,26 @@ const Navigation = () => {
   const [userData, setUserData] = useState(null);
 
   const checkLocalUser = () => {
-    const { email, password } = credential;
-    if (email && password) {
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => { 
-          setLoading(false);
-          const user = userCredential.user || null;
+    getData("currentUser").then((currentUser) => {
+      if (currentUser) {
+        const { email, password } = currentUser.credential;
+        signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            setLoading(false);
+            const user = userCredential.user || null;
 
-          const currentUser = {
-            user,
-            credential,
-          };
-
-          dispatch({ type: "user/setCurrentUser", payload: currentUser });
-          storeData("currentUser", currentUser);
-        })
-        .catch((error) => {
-          const { code } = error;
-          setLoading(false);
-          Alert.alert("Error", code);
-        });
-    } else {
-      setLoading(false);
-    }
+          
+            dispatch({ type: "user/setUser", payload: user });
+          })
+          .catch((error) => {
+            const { code } = error;
+            setLoading(false);
+            Alert.alert("Error", code);
+          });
+      } else {
+        setLoading(false);
+      }
+    });
   };
 
   useEffect(() => {

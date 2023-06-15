@@ -13,7 +13,9 @@ const store = configureStore({
 const loadUser = async (dispatch, state) => {
   const currentUser = await getData("currentUser");
 
-  dispatch({ type: "user/setCurrentUser", payload: currentUser });
+  if (currentUser) {
+    dispatch({ type: "user/setUser", payload: currentUser.user });
+  }
 };
 
 store.dispatch(loadUser);

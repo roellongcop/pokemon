@@ -57,13 +57,11 @@ const SignUpScreen = ({ navigation }) => {
 
         addStartPokemon(user);
 
-        const currentUser = {
+        dispatch({ type: "user/setUser", payload: user });
+        storeData("currentUser", {
           user,
           credential: { email, password },
-        };
-
-        dispatch({ type: "user/setCurrentUser", payload: currentUser });
-        storeData("currentUser", currentUser);
+        });
         setLoading(false);
       })
       .catch((error) => {

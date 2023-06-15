@@ -14,7 +14,7 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { getAuth, signOut } from "firebase/auth";
-import { storeData } from "../lib/storage";
+import { removeData } from "../lib/storage";
 
 const SideDrawer = (props) => {
   const auth = getAuth();
@@ -25,9 +25,8 @@ const SideDrawer = (props) => {
   const handleSignout = () => {
     signOut(auth)
       .then(() => {
-        dispatch({ type: "user/setUser", payload: null });
-        storeData("user", null);
-        storeData("userCredential", null);
+        dispatch({ type: "user/setCurrentUser", payload: null });
+        removeData("currentUser");
       })
       .catch((error) => {
         const { code } = error;
