@@ -40,7 +40,6 @@ const AuthScreen = ({ navigation }) => {
         setLoading(false);
         const user = userCredential.user || null;
 
-        dispatch({ type: "user/setUser", payload: user });
         storeData("currentUser", {
           user,
           credential: { email, password },

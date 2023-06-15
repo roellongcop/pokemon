@@ -65,10 +65,6 @@ const Navigation = () => {
         signInWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
             setLoading(false);
-            const user = userCredential.user || null;
-
-          
-            dispatch({ type: "user/setUser", payload: user });
           })
           .catch((error) => {
             const { code } = error;
@@ -85,6 +81,7 @@ const Navigation = () => {
     checkLocalUser();
 
     onAuthStateChanged(auth, (user) => {
+      dispatch({ type: "user/setUser", payload: user });
       setUserData(user);
     });
 

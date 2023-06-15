@@ -57,7 +57,6 @@ const SignUpScreen = ({ navigation }) => {
 
         addStartPokemon(user);
 
-        dispatch({ type: "user/setUser", payload: user });
         storeData("currentUser", {
           user,
           credential: { email, password },
