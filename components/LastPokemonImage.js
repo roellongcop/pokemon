@@ -1,17 +1,8 @@
 import React, { useEffect } from "react";
-import {
-  View,
-} from "react-native";
+import { VieImagew } from "react-native";
 
-const LastPokemonImage = (props) => {
- 
-  return (
-    <View style={{ flex: 1 }}>
-  
-    </View>
-  );
+const LastPokemonImage = ({ source }) => {
+  return <Image style={{ width: 30, height: 30 }} source={source} />;
 };
 
 export default LastPokemonImage;
-
-

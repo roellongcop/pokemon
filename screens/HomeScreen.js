@@ -11,21 +11,20 @@ const HomeScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('user', user);
-    // firebaseSubscribe(`users/${user.uid}`, (snapshot) => {
-    //   if (snapshot) {
-    //     const data = snapshot.val();
-    //     if (data) {
-    //       const transformedData = Object.entries(data).map(
-    //         ([key, value]) => ({
-    //           key,
-    //           ...value,
-    //         })
-    //       );
-    //       dispatch({ type: "user/setPokemons", payload: transformedData });
-    //     }
-    //   }
-    // });
+    firebaseSubscribe(`users/${user.uid}`, (snapshot) => {
+      if (snapshot) {
+        const data = snapshot.val();
+        if (data) {
+          const transformedData = Object.entries(data).map(
+            ([key, value]) => ({
+              key,
+              ...value,
+            })
+          );
+          dispatch({ type: "user/setPokemons", payload: transformedData });
+        }
+      }
+    });
   }, [])
   return (
     <SafeAreaView style={globalStyles.mainContainer}>

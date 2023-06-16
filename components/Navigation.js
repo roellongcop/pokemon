@@ -54,7 +54,6 @@ const PokemonStackScreen = () => {
 const Navigation = () => {
   const auth = getAuth();
   const dispatch = useDispatch();
-  const { credential } = useSelector((state) => state.USER);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
 
