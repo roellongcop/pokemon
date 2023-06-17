@@ -19,8 +19,14 @@ const PokemonImage = ({ pokemonId, width, height, style }) => {
       />
     );
   }
-
-  return <SvgUri style={style} width={width} height={height} uri={source} />;
+  return (
+    <SvgUri
+      style={style}
+      width={width || 40}
+      height={height || 40}
+      uri={source}
+    />
+  );
 };
 
 export default PokemonImage;

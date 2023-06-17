@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "./slice/userSlice";
+import pokemonSlice from "./slice/pokemonSlice";
 import { asyncFunctionMiddleware } from "./middleware/asyncFunctionMiddleware";
 import { getData } from "../lib/storage";
 
 const store = configureStore({
   reducer: {
     USER: userSlice,
+    POKEMON: pokemonSlice,
   },
   middleware: [asyncFunctionMiddleware],
 });

@@ -130,7 +130,7 @@ const Navigation = () => {
             ),
           }}
         >
-          <Drawer.Screen
+          {/* <Drawer.Screen
             name="Dashboard"
             component={DashboardStackScreen}
             options={{
@@ -142,7 +142,7 @@ const Navigation = () => {
                 />
               ),
             }}
-          />
+          /> */}
           <Drawer.Screen
             name="Pokemons"
             component={PokemonStackScreen}
