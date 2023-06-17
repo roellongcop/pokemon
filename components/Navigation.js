@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {
-  Alert,
-  Image,
-  StyleSheet,
-} from "react-native";
+import { Alert, Image, StyleSheet } from "react-native";
 import { readData } from "../firebaseConfig";
 import {
   getAuth,
@@ -13,7 +9,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { getData } from "../lib/storage";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import SideDrawer from "./SideDrawer";
 import HomeScreen from "../screens/HomeScreen";
@@ -22,7 +18,7 @@ import AuthScreen from "../screens/AuthScreen";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import LoadingScreen from "../screens/LoadingScreen";
-
+import LastPokemonImage from "./LastPokemonImage";
 
 const Drawer = createDrawerNavigator();
 
@@ -57,6 +53,7 @@ const PokemonStackScreen = () => {
 
 const Navigation = () => {
   const auth = getAuth();
+  const { pokemons } = useSelector((state) => state.USER);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
@@ -121,13 +118,23 @@ const Navigation = () => {
       <NavigationContainer>
         <Drawer.Navigator
           drawerContent={(props) => <SideDrawer {...props} />}
-          screenOptions={styles.screenOptions}
+          screenOptions={{
+            drawerActiveBackgroundColor: "#e93e25",
+            drawerActiveTintColor: "#fff",
+            drawerInactiveTintColor: "#555",
+            headerRight: () => (
+              <LastPokemonImage
+                style={{ marginRight: 10 }}
+                pokemons={pokemons}
+              />
+            ),
+          }}
         >
           <Drawer.Screen
             name="Dashboard"
             component={DashboardStackScreen}
             options={{
-              headerShown: false,
+              // headerShown: false,
               drawerIcon: ({ color }) => (
                 <Image
                   style={styles.drawerIcon}
@@ -188,10 +195,5 @@ const styles = StyleSheet.create({
   drawerIcon: {
     width: 30,
     height: 30,
-  },
-  screenOptions: {
-    drawerActiveBackgroundColor: "#e93e25",
-    drawerActiveTintColor: "#fff",
-    drawerInactiveTintColor: "#555",
   },
 });

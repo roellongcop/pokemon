@@ -33,7 +33,6 @@ const SideDrawer = (props) => {
       });
   };
 
-
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView
@@ -46,51 +45,31 @@ const SideDrawer = (props) => {
         >
           <View style={styles.profileContainer}>
             <Text style={styles.name}>{user?.email}</Text>
-            <View style={{ flexDirection: "row" }}>
-              <Text
-                style={{
-                  color: "#fff",
-                }}
-              >
+            <View style={styles.subTextContainer}>
+              <Text style={styles.subText}>
                 {pokemons?.length || 0} Owned Pokemons
               </Text>
             </View>
           </View>
         </ImageBackground>
-        <View style={{ flex: 1, backgroundColor: "#fff", paddingTop: 10 }}>
+        <View style={styles.drawerItemContainer}>
           <DrawerItemList {...props} />
         </View>
       </DrawerContentScrollView>
-      <View style={{ padding: 20, borderTopWidth: 1, borderTopColor: "#eee" }}>
-        <TouchableOpacity onPress={() => {}} style={{ paddingVertical: 15 }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={styles.bottomMenuContainer}>
+        <TouchableOpacity onPress={() => {}} style={styles.bottomMenuTouchable}>
+          <View style={styles.bottomTextContainer}>
             <Ionicons name="shield-outline" size={22} />
-            <Text
-              style={{
-                marginLeft: 30,
-                fontWeight: "bold",
-                color: "#555",
-              }}
-            >
-              My Account
-            </Text>
+            <Text style={styles.bottomText}>My Account</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleSignout}
-          style={{ paddingVertical: 15 }}
+          style={styles.bottomMenuTouchable}
         >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={styles.bottomTextContainer}>
             <Ionicons name="exit-outline" size={22} />
-            <Text
-              style={{
-                marginLeft: 30,
-                fontWeight: "bold",
-                color: "#555",
-              }}
-            >
-              Sign Out
-            </Text>
+            <Text style={styles.bottomText}>Sign Out</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -101,6 +80,28 @@ const SideDrawer = (props) => {
 export default SideDrawer;
 
 const styles = StyleSheet.create({
+  bottomMenuTouchable: { paddingVertical: 15 },
+  subTextContainer: { flexDirection: "row" },
+  subText: { color: "#fff" },
+  bottomText: {
+    marginLeft: 30,
+    fontWeight: "bold",
+    color: "#555",
+  },
+  bottomTextContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  bottomMenuContainer: {
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: "#eee",
+  },
+  drawerItemContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+    paddingTop: 10,
+  },
   contentContainerStyle: {
     backgroundColor: "transparent",
   },

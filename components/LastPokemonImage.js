@@ -1,13 +1,23 @@
-import React, { useEffect } from "react";
-import { Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import PokemonImage from "./PokemonImage";
 
-const LastPokemonImage = ({ pokemonId }) => {
+const LastPokemonImage = ({ pokemons, height, width, style }) => {
+  const [lastPokemon, setLastPokemon] = useState(0);
 
-  useEffect(() => {
+    useEffect(() => {
+    if (pokemons) {
+      setLastPokemon(pokemons.slice(-1)[0]);
+    }
+  }, [pokemons]);
 
-  }, [])
-  
-  return <Image style={{ width: 30, height: 30 }} source={source} />;
+  return (
+    <PokemonImage
+      style={style}
+      pokemonId={lastPokemon}
+      width={width || 30}
+      height={height || 30}
+    />
+  );
 };
 
 export default LastPokemonImage;
