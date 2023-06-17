@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { ActivityIndicator, Alert, Image, View } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { app } from "../firebaseConfig";
+import {
+  Alert,
+  Image,
+  StyleSheet,
+} from "react-native";
+import { readData } from "../firebaseConfig";
 import {
   getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { getData, storeData } from "../lib/storage";
-import { useDispatch, useSelector } from "react-redux";
+import { getData } from "../lib/storage";
+import { useDispatch } from "react-redux";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import SideDrawer from "./SideDrawer";
 import HomeScreen from "../screens/HomeScreen";
@@ -18,11 +21,12 @@ import PokemonListScreen from "../screens/PokemonListScreen";
 import AuthScreen from "../screens/AuthScreen";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import SignUpScreen from "../screens/SignUpScreen";
+import LoadingScreen from "../screens/LoadingScreen";
+
 
 const Drawer = createDrawerNavigator();
 
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
 
 const AuthStackScreen = () => {
   return (
@@ -82,6 +86,21 @@ const Navigation = () => {
     onAuthStateChanged(auth, (user) => {
       dispatch({ type: "user/setUser", payload: user });
       setUserData(user);
+
+      if (user) {
+        readData({
+          link: `users/${user.uid}`,
+          successCallback: (snapshot) => {
+            if (snapshot) {
+              const { pokemon } = snapshot.val();
+              dispatch({
+                type: "user/setPokemons",
+                payload: pokemon ? Object.values(pokemon) : [],
+              });
+            }
+          },
+        });
+      }
     });
 
     return () => {};
@@ -89,14 +108,11 @@ const Navigation = () => {
 
   if (loading) {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-        }}
-      >
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Loading" component={LoadingScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     );
   }
 
@@ -105,11 +121,7 @@ const Navigation = () => {
       <NavigationContainer>
         <Drawer.Navigator
           drawerContent={(props) => <SideDrawer {...props} />}
-          screenOptions={{
-            drawerActiveBackgroundColor: "#e93e25",
-            drawerActiveTintColor: "#fff",
-            drawerInactiveTintColor: "#555",
-          }}
+          screenOptions={styles.screenOptions}
         >
           <Drawer.Screen
             name="Dashboard"
@@ -118,7 +130,7 @@ const Navigation = () => {
               headerShown: false,
               drawerIcon: ({ color }) => (
                 <Image
-                  style={{ width: 30, height: 30 }}
+                  style={styles.drawerIcon}
                   source={require("../assets/icon.png")}
                 />
               ),
@@ -130,7 +142,7 @@ const Navigation = () => {
             options={{
               drawerIcon: ({ color }) => (
                 <Image
-                  style={{ width: 30, height: 30 }}
+                  style={styles.drawerIcon}
                   source={require("../assets/forgot.png")}
                 />
               ),
@@ -143,7 +155,7 @@ const Navigation = () => {
               title: "Pokemon Catchers",
               drawerIcon: ({ color }) => (
                 <Image
-                  style={{ width: 30, height: 30 }}
+                  style={styles.drawerIcon}
                   source={require("../assets/signup.png")}
                 />
               ),
@@ -156,7 +168,7 @@ const Navigation = () => {
               title: "My Pokemons",
               drawerIcon: ({ color }) => (
                 <Image
-                  style={{ width: 30, height: 30 }}
+                  style={styles.drawerIcon}
                   source={require("../assets/login.png")}
                 />
               ),
@@ -171,3 +183,15 @@ const Navigation = () => {
 };
 
 export default Navigation;
+
+const styles = StyleSheet.create({
+  drawerIcon: {
+    width: 30,
+    height: 30,
+  },
+  screenOptions: {
+    drawerActiveBackgroundColor: "#e93e25",
+    drawerActiveTintColor: "#fff",
+    drawerInactiveTintColor: "#555",
+  },
+});

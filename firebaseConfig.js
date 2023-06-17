@@ -12,6 +12,7 @@ import {
   remove,
   update
 } from "firebase/database";
+import { getAuth } from "firebase/auth";
 // Optionally import the services that you want to use
 // import {...} from "firebase/auth";
 // import {...} from "firebase/database";
@@ -40,13 +41,13 @@ const app = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);
 const database = getDatabase(app);
 
-const db = getDatabase();
+const auth = getAuth(app);
 
 const pushData = ({ link, data, successCallback, errorCallback }) => {
   successCallback = successCallback || (() => {});
   errorCallback = errorCallback || (() => {});
 
-  push(ref(db, link), data)
+  push(ref(database, link), data)
     .then((result) => {
       successCallback(result);
     })
@@ -59,7 +60,7 @@ const readData = ({ link, successCallback, errorCallback }) => {
   successCallback = successCallback || (() => {});
   errorCallback = errorCallback || (() => {});
 
-  get(ref(db, link))
+  get(ref(database, link))
     .then((snapshot) => {
       successCallback(snapshot);
     })
@@ -71,7 +72,7 @@ const setData = ({ link, data, successCallback, errorCallback }) => {
   successCallback = successCallback || (() => {});
   errorCallback = errorCallback || (() => {});
 
-  set(ref(db, link), data)
+  set(ref(database, link), data)
     .then((snapshot) => {
       successCallback(snapshot);
     })
@@ -84,7 +85,7 @@ const updateData = ({ link, data, successCallback, errorCallback }) => {
   successCallback = successCallback || (() => {});
   errorCallback = errorCallback || (() => {});
 
-  update(ref(db, link), data)
+  update(ref(database, link), data)
     .then((snapshot) => {
       successCallback(snapshot);
     })
@@ -97,7 +98,7 @@ const removeData = ({ link, successCallback, errorCallback }) => {
   successCallback = successCallback || (() => {});
   errorCallback = errorCallback || (() => {});
 
-  remove(ref(db, link))
+  remove(ref(database, link))
     .then((snapshot) => {
       successCallback(snapshot);
     })
@@ -107,13 +108,13 @@ const removeData = ({ link, successCallback, errorCallback }) => {
 };
 
 const firebaseSubscribe = (link, callback = () => {}) => {
-  onValue(ref(db, link), (snapshot) => {
+  onValue(ref(database, link), (snapshot) => {
     callback(snapshot);
   });
 };
 
 const firebaseOff = (link, callback = () => {}) => {
-  off(ref(db, link), (snapshot) => {
+  off(ref(database, link), (snapshot) => {
     callback(snapshot);
   });
 };
@@ -121,6 +122,7 @@ const firebaseOff = (link, callback = () => {}) => {
 export {
   app,
   database,
+  auth,
   pushData,
   firebaseSubscribe,
   firebaseOff,
@@ -128,5 +130,5 @@ export {
   removeData,
   readData,
   updateData,
-  firebaseConfig
+  firebaseConfig,
 };

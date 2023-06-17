@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -10,14 +10,13 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
-
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
-import { getAuth, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { removeData } from "../lib/storage";
+import { auth } from "../firebaseConfig";
 
 const SideDrawer = (props) => {
-  const auth = getAuth();
   const dispatch = useDispatch();
 
   const { user, pokemons } = useSelector((state) => state.USER);
@@ -33,6 +32,7 @@ const SideDrawer = (props) => {
         console.log("error", code);
       });
   };
+
 
   return (
     <View style={{ flex: 1 }}>

@@ -12,15 +12,13 @@ import {
 import { Button, Snackbar } from "react-native-paper";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import authStyles from "../styles/authStyles";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { useDispatch } from "react-redux";
-import { getData, storeData } from "../lib/storage";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { storeData } from "../lib/storage";
 import NetInfo from "@react-native-community/netinfo";
 import { pushData } from "../firebaseConfig";
+import { auth } from "../firebaseConfig";
 
 const SignUpScreen = ({ navigation }) => {
-  const dispatch = useDispatch();
-  const auth = getAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,16 +34,16 @@ const SignUpScreen = ({ navigation }) => {
 
   const addStartPokemon = (user) => {
     pushData({
-      link: `users/${user.uid}`,
-      data: { pokemon: 1 },
+      link: `users/${user.uid}/pokemon`,
+      data: 1,
     });
     pushData({
-      link: `users/${user.uid}`,
-      data: { pokemon: 2 },
+      link: `users/${user.uid}/pokemon`,
+      data: 2,
     });
     pushData({
-      link: `users/${user.uid}`,
-      data: { pokemon: 3 },
+      link: `users/${user.uid}/pokemon`,
+      data: 3,
     });
   };
 

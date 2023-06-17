@@ -12,15 +12,12 @@ import {
 import { Button, Snackbar } from "react-native-paper";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import authStyles from "../styles/authStyles";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { useDispatch, useSelector } from "react-redux";
+import {  signInWithEmailAndPassword } from "firebase/auth";
 import { getData, storeData } from "../lib/storage";
 import NetInfo from "@react-native-community/netinfo";
+import { auth } from "../firebaseConfig";
 
 const AuthScreen = ({ navigation }) => {
-  const dispatch = useDispatch();
-  const auth = getAuth();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

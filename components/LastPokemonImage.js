@@ -1,7 +1,12 @@
 import React, { useEffect } from "react";
-import { VieImagew } from "react-native";
+import { Image } from "react-native";
 
-const LastPokemonImage = ({ source }) => {
+const LastPokemonImage = ({ pokemonId }) => {
+
+  useEffect(() => {
+
+  }, [])
+  
   return <Image style={{ width: 30, height: 30 }} source={source} />;
 };
 
