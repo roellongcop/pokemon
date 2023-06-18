@@ -36,10 +36,15 @@ const SideDrawer = (props) => {
   useEffect(() => {
     firebaseSubscribe(`users/${user.uid}`, (snapshot) => {
       if (snapshot && snapshot.val()) {
-        const { pokemon } = snapshot.val();
+        const { pokemon, energy } = snapshot.val();
         dispatch({
           type: "user/setPokemons",
           payload: pokemon ? Object.values(pokemon) : [],
+        });
+
+        dispatch({
+          type: "user/setEnergy",
+          payload: energy,
         });
       }
     });

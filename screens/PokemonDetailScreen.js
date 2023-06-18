@@ -15,13 +15,13 @@ import {
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { Button, Chip, IconButton } from "react-native-paper";
 import { apiGet } from "../lib/api";
-import { pushData } from "../firebaseConfig";
+import { pushData, setData } from "../firebaseConfig";
 import { useSelector } from "react-redux";
 import { StatusBar } from "expo-status-bar";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const PokemonDetailScreen = ({ navigation, route }) => {
-  const { user } = useSelector((state) => state.USER);
+  const { user, energy } = useSelector((state) => state.USER);
   const { pokemon } = route.params;
   const { details } = pokemon;
   const type = details.types[0].type.name;
@@ -226,6 +226,14 @@ const PokemonDetailScreen = ({ navigation, route }) => {
           successCallback: () => {
             setCaptureSuccess(true);
             setCapturing(false);
+
+            setData({
+              link: `users/${user.uid}/energy`,
+              data: {
+                chance: energy.chance == 0 ? 0 : energy.chance - 1,
+                time: new Date().getTime(),
+              },
+            });
           },
           errorCallback: (error) => {
             setCaptureFailed(true);
@@ -235,8 +243,14 @@ const PokemonDetailScreen = ({ navigation, route }) => {
       } else {
         setCaptureFailed(true);
         setCapturing(false);
+        setData({
+          link: `users/${user.uid}/energy`,
+          data: {
+            chance: energy.chance == 0 ? 0 : energy.chance - 1,
+            time: new Date().getTime(),
+          },
+        });
       }
-
     }, 5000);
   };
 
@@ -273,16 +287,27 @@ const PokemonDetailScreen = ({ navigation, route }) => {
         </View>
 
         <View style={styles.detailsContainer}>
-          <Button
-            onPress={handleCapture}
-            disabled={capturing}
-            loading={capturing}
-            mode="contained"
-            uppercase={true}
-            style={styles.captureButton}
-          >
-            {capturing ? "capturing" : "capture pokemon"}
-          </Button>
+          {energy.chance ? (
+            <Button
+              onPress={handleCapture}
+              disabled={capturing}
+              loading={capturing}
+              mode="contained"
+              uppercase={true}
+              style={styles.captureButton}
+            >
+              {capturing ? "capturing" : "capture pokemon"}
+            </Button>
+          ) : (
+            <Button
+              disabled={true}
+              mode="contained"
+              uppercase={true}
+              style={styles.captureButton}
+            >
+              Not Enough Energy
+            </Button>
+          )}
           <TabView
             lazy
             renderLazyPlaceholder={renderLazyPlaceholder}
@@ -301,6 +326,9 @@ const PokemonDetailScreen = ({ navigation, route }) => {
         onRequestClose={() => setCapturing(false)}
       >
         <View style={styles.modalContainer}>
+          <Text style={[styles.modalTitle, { color: "#FFA800" }]}>
+            {energy.chance} {(energy.chance > 1 ? "Chances" : "Chance")} Left
+          </Text>
           <Image
             width={200}
             height={200}

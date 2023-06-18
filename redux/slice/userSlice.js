@@ -4,6 +4,10 @@ const slice = createSlice({
   initialState: {
     user: null,
     pokemons: [],
+    energy: {
+      chance: 0,
+      time: new Date().getTime()
+    },
   },
   reducers: {
     
@@ -13,6 +17,10 @@ const slice = createSlice({
     setPokemons: (state, action) => {
       state.pokemons = action.payload;
     },
+
+    setEnergy: (state, action) => {
+      state.energy = action.payload;
+    }
   },
 });
 export default slice.reducer;

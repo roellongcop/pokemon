@@ -119,10 +119,16 @@ const Navigation = () => {
           link: `users/${user.uid}`,
           successCallback: (snapshot) => {
             if (snapshot) {
-              const { pokemon } = snapshot.val();
+              const { pokemon, energy } = snapshot.val();
+              
               dispatch({
                 type: "user/setPokemons",
                 payload: pokemon ? Object.values(pokemon) : [],
+              });
+
+              dispatch({
+                type: "user/setEnergy",
+                payload: energy,
               });
             }
           },

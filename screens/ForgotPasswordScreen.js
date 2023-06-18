@@ -71,7 +71,6 @@ const ForgotPasswordScreen = ({ navigation }) => {
         }
       >
         <View style={authStyles.container}>
-          <StatusBar translucent backgroundColor="transparent" />
 
           <View style={authStyles.overlay}>
             <View style={authStyles.headerContainer}>
