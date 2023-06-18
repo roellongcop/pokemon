@@ -10,13 +10,15 @@ import {
   StyleSheet,
   useWindowDimensions,
   Modal,
-  RefreshControl,
+  FlatList,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { Button, Chip, IconButton } from "react-native-paper";
 import { apiGet } from "../lib/api";
 import { pushData } from "../firebaseConfig";
 import { useSelector } from "react-redux";
+import { StatusBar } from "expo-status-bar";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const PokemonDetailScreen = ({ navigation, route }) => {
   const { user } = useSelector((state) => state.USER);
@@ -118,9 +120,29 @@ const PokemonDetailScreen = ({ navigation, route }) => {
     { key: "heldItems", title: "Items" },
   ]);
 
+  const ChipList = ({ data, dataKey, title }) =>
+    data.length ? (
+      <FlatList
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
+        data={data}
+        renderItem={({ item, index }) => (
+          <View key={index.toString()} style={{ marginBottom: 5 }}>
+            <Chip mode="outlined" style={{ height: 50 }} icon="information">
+              {item[dataKey].name}
+            </Chip>
+          </View>
+        )}
+        keyExtractor={(item, index) => index.toString()}
+        ListHeaderComponent={<Text style={styles.header}>{title}</Text>}
+      />
+    ) : (
+      <Text style={styles.header}>No {title}</Text>
+    );
+
   const Stats = () => (
     <ScrollView>
-      <View style={styles.tabContentContainer}>
+      <View>
         <Text style={styles.header}>Stats</Text>
         {details.stats.map((stat, index) => (
           <Text style={styles.item} key={index.toString()}>
@@ -136,54 +158,17 @@ const PokemonDetailScreen = ({ navigation, route }) => {
   );
 
   const Abilities = () => (
-    <ScrollView>
-      <View style={styles.tabContentContainer}>
-        <Text style={styles.header}>Abilities</Text>
-        {details.abilities.map((ability, index) => (
-          <View key={index.toString()} style={{ marginBottom: 5 }}>
-            <Chip mode="outlined" style={{ height: 50 }} icon="information">
-              {ability.ability.name}
-            </Chip>
-          </View>
-        ))}
-      </View>
-    </ScrollView>
+    <ChipList data={details.abilities} dataKey="ability" title="Abilities" />
   );
 
   const Moves = () => (
-    <ScrollView>
-      <View style={styles.tabContentContainer}>
-        <Text style={styles.header}>Moves</Text>
-        {details.moves.map((move, index) => (
-          <View key={index.toString()} style={{ marginBottom: 5 }}>
-            <Chip mode="outlined" style={{ height: 50 }} icon="information">
-              {move.move.name}
-            </Chip>
-          </View>
-        ))}
-      </View>
-    </ScrollView>
+    <ChipList data={details.moves} dataKey="move" title="Moves" />
   );
 
-  const HeldItems = () =>
-    details.held_items.length ? (
-      <ScrollView>
-        <View style={styles.tabContentContainer}>
-          <Text style={styles.header}>Held Items</Text>
-          {details.held_items.map((item, index) => (
-            <View key={index.toString()} style={{ marginBottom: 5 }}>
-              <Chip mode="outlined" style={{ height: 50 }} icon="information">
-                {item.item.name}
-              </Chip>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
-    ) : (
-      <View style={styles.tabContentContainer}>
-        <Text style={styles.header}>No Held Items</Text>
-      </View>
-    );
+  const HeldItems = () => (
+    <ChipList data={details.held_items} dataKey="item" title="Items" />
+  );
+
   const Types = () => {
     return (
       <View style={{ display: "flex", flexDirection: "row" }}>
@@ -210,7 +195,7 @@ const PokemonDetailScreen = ({ navigation, route }) => {
   const renderTabBar = (props) => (
     <TabBar
       {...props}
-      indicatorStyle={{ backgroundColor: "#337ab7" }}
+      indicatorStyle={{ backgroundColor: "#3699FF" }}
       style={{
         backgroundColor: "#fff",
       }}
@@ -232,28 +217,26 @@ const PokemonDetailScreen = ({ navigation, route }) => {
     setCapturing(true);
 
     setTimeout(() => {
-      const randomNumber = Math.floor(Math.random() * 255) + 0;
-      console.log("randomNumber", randomNumber);
-      console.log("capture_rate", captureRate);
-      if (randomNumber <= captureRate) {
+      const randomNumber = Math.floor(Math.random() * 2) + 1;
+
+      if (randomNumber == 2) {
         pushData({
           link: `users/${user.uid}/pokemon`,
           data: details.id,
           successCallback: () => {
-            setCapturing(false);
             setCaptureSuccess(true);
+            setCapturing(false);
           },
           errorCallback: (error) => {
-            setCapturing(false);
             setCaptureFailed(true);
+            setCapturing(false);
           },
         });
       } else {
-        setCapturing(false);
         setCaptureFailed(true);
+        setCapturing(false);
       }
 
-      setCapturing(false);
     }, 5000);
   };
 
@@ -265,72 +248,59 @@ const PokemonDetailScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={{ flex: 1 }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-      >
-        <ImageBackground
-          source={imageSource}
-          resizeMode="stretch"
-          style={styles.background}
-        >
-          <IconButton
-            iconColor="#fff"
-            icon="arrow-left"
-            size={25}
-            onPress={() => navigation.goBack()}
-          />
-          <View style={styles.nameContainer}>
-            <Text style={styles.name}>{pokemon.name}</Text>
-            <View>
-              <Types />
-            </View>
-          </View>
-          <View style={styles.imageContainer}>
-            <PokemonImage pokemonId={details.id} width={250} height={250} />
-          </View>
+      <StatusBar style="auto" />
 
-          <View style={styles.detailsContainer}>
-            <Button
-              onPress={handleCapture}
-              disabled={capturing}
-              loading={capturing}
-              mode="contained"
-              uppercase={true}
-              style={styles.captureButton}
-            >
-              {capturing
-                ? "capturing"
-                : "capture pokemon (" + capturePercentage() + "%)"}
-            </Button>
-            <TabView
-              lazy
-              renderLazyPlaceholder={renderLazyPlaceholder}
-              renderTabBar={renderTabBar}
-              navigationState={{ index, routes }}
-              renderScene={renderScene}
-              onIndexChange={setIndex}
-              initialLayout={{ width: layout.width }}
-            />
+      <ImageBackground
+        source={imageSource}
+        resizeMode="stretch"
+        style={styles.background}
+      >
+        <IconButton
+          style={styles.backButton}
+          iconColor="#fff"
+          icon="arrow-left"
+          size={25}
+          onPress={() => navigation.goBack()}
+        />
+        <View style={styles.nameContainer}>
+          <Text style={styles.name}>{pokemon.name}</Text>
+          <View>
+            <Types />
           </View>
-        </ImageBackground>
-      </ScrollView>
+        </View>
+        <View style={styles.imageContainer}>
+          <PokemonImage pokemonId={details.id} width={250} height={250} />
+        </View>
+
+        <View style={styles.detailsContainer}>
+          <Button
+            onPress={handleCapture}
+            disabled={capturing}
+            loading={capturing}
+            mode="contained"
+            uppercase={true}
+            style={styles.captureButton}
+          >
+            {capturing ? "capturing" : "capture pokemon"}
+          </Button>
+          <TabView
+            lazy
+            renderLazyPlaceholder={renderLazyPlaceholder}
+            renderTabBar={renderTabBar}
+            navigationState={{ index, routes }}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            initialLayout={{ width: layout.width }}
+          />
+        </View>
+      </ImageBackground>
 
       <Modal
         visible={capturing}
-        animationType="slide"
+        animationType="none"
         onRequestClose={() => setCapturing(false)}
       >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <View style={styles.modalContainer}>
           <Image
             width={200}
             height={200}
@@ -341,56 +311,56 @@ const PokemonDetailScreen = ({ navigation, route }) => {
 
       <Modal
         visible={captureSuccess}
-        animationType="slide"
+        animationType="none"
         onRequestClose={() => setCaptureSuccess(false)}
       >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text
-            style={{ fontSize: 30, fontWeight: "bold", marginVertical: 10 }}
-          >
-            Capture Success
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalTitle}>
+            <Ionicons name="checkmark-outline" size={30} />
+            {pokemon.name} Captured!
           </Text>
-          <Button
-            mode="contained"
-            icon="close"
-            buttonColor="#337ab7"
-            labelStyle={{ color: "#fff" }}
-            onPress={() => setCaptureSuccess(false)}
-          >
-            Close
-          </Button>
+          <PokemonImage pokemonId={details.id} width={300} height={300} />
+
+          <View style={styles.modalFooterContainer}>
+            <Button
+              mode="contained"
+              icon="eye"
+              buttonColor="#1BC5BD"
+              labelStyle={{ color: "#fff" }}
+              onPress={() => setCaptureSuccess(false)}
+            >
+              My Pokemons
+            </Button>
+            <Button
+              style={{ marginLeft: 10 }}
+              mode="contained"
+              icon="close"
+              buttonColor="#3699FF"
+              labelStyle={{ color: "#fff" }}
+              onPress={() => setCaptureSuccess(false)}
+            >
+              Close
+            </Button>
+          </View>
         </View>
       </Modal>
 
       <Modal
         visible={captureFailed}
-        animationType="slide"
+        animationType="none"
         onRequestClose={() => setCaptureFailed(false)}
       >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text
-            style={{ fontSize: 30, fontWeight: "bold", marginVertical: 10 }}
-          >
+        <View style={styles.modalContainer}>
+          <Text style={[styles.modalTitle, { color: "#F64E60" }]}>
+            <Ionicons name="close-outline" size={30} />
             Capture Failed
           </Text>
+          <PokemonImage pokemonId={details.id} width={300} height={300} />
           <Button
+            style={{ marginTop: 20 }}
             mode="contained"
             icon="close"
-            buttonColor="#337ab7"
+            buttonColor="#3699FF"
             labelStyle={{ color: "#fff" }}
             onPress={() => setCaptureFailed(false)}
           >
@@ -405,12 +375,36 @@ const PokemonDetailScreen = ({ navigation, route }) => {
 export default PokemonDetailScreen;
 
 const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
+  },
+  modalFooterContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+  },
+  modalTitle: {
+    fontSize: 30,
+    fontWeight: "bold",
+    marginVertical: 10,
+    textTransform: "capitalize",
+    color: "#1BC5BD",
+    fontWeight: "bold",
+  },
+  backButton: {
+    marginTop: 30,
+  },
   captureButton: {
     marginTop: 45,
   },
   tabContentContainer: {
     marginTop: 20,
-    paddingBottom: 600,
+    // paddingBottom: 600,
+    height: "100%",
   },
   item: {
     fontSize: 16,
@@ -422,6 +416,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     fontWeight: "bold",
+    marginTop: 20,
     marginBottom: 5,
   },
   background: {},
