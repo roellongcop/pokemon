@@ -1,18 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Text, View, SafeAreaView, FlatList } from "react-native";
+import { Text, View, SafeAreaView, FlatList, StyleSheet, ScrollView } from "react-native";
 import { apiGet, apiUrl } from "../lib/api";
 import Pokemon from "../components/Pokemon";
 import { useDispatch, useSelector } from "react-redux";
-import { StyleSheet } from "react-native";
 import {
   Button,
   IconButton,
   Searchbar,
   SegmentedButtons,
 } from "react-native-paper";
-import { ScrollView } from "react-native";
+import { checkEnergy } from "../lib/user";
+
 
 const PokemonListScreen = ({ navigation, route }) => {
+  const { user } = useSelector((state) => state.USER);
   const dispatch = useDispatch();
   const { pokemons, count, next, previous } = useSelector(
     (state) => state.POKEMON
@@ -75,6 +76,8 @@ const PokemonListScreen = ({ navigation, route }) => {
   };
 
   const handleRefresh = () => {
+    checkEnergy(user);
+
     setRefreshing(true);
     loadPokemons(() => {
       setRefreshing(false);

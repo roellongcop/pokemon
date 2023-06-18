@@ -14,7 +14,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "firebase/auth";
 import { removeData } from "../lib/storage";
-import { auth, firebaseSubscribe } from "../firebaseConfig";
+import { auth, firebaseSubscribe, setData } from "../firebaseConfig";
 
 const SideDrawer = (props) => {
   const dispatch = useDispatch();
@@ -48,7 +48,6 @@ const SideDrawer = (props) => {
         });
       }
     });
-
   }, []);
 
   return (

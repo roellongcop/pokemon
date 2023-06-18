@@ -11,10 +11,12 @@ import {
   useWindowDimensions,
   Modal,
   FlatList,
+  RefreshControl,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { Button, Chip, IconButton } from "react-native-paper";
 import { apiGet } from "../lib/api";
+import { checkEnergy } from "../lib/user";
 import { pushData, setData } from "../firebaseConfig";
 import { useSelector } from "react-redux";
 import { StatusBar } from "expo-status-bar";
@@ -36,6 +38,7 @@ const PokemonDetailScreen = ({ navigation, route }) => {
   const [captureFailed, setCaptureFailed] = useState(false);
 
   const handleRefresh = () => {
+    checkEnergy(user);
     setRefreshing(true);
     updateImageSource();
     setIndex(0);
@@ -141,7 +144,11 @@ const PokemonDetailScreen = ({ navigation, route }) => {
     );
 
   const Stats = () => (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
       <View>
         <Text style={styles.header}>Stats</Text>
         {details.stats.map((stat, index) => (
@@ -327,7 +334,7 @@ const PokemonDetailScreen = ({ navigation, route }) => {
       >
         <View style={styles.modalContainer}>
           <Text style={[styles.modalTitle, { color: "#FFA800" }]}>
-            {energy.chance} {(energy.chance > 1 ? "Chances" : "Chance")} Left
+            {energy.chance} {energy.chance > 1 ? "Chances" : "Chance"} Left
           </Text>
           <Image
             width={200}
