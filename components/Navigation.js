@@ -20,6 +20,8 @@ import SignUpScreen from "../screens/SignUpScreen";
 import LoadingScreen from "../screens/LoadingScreen";
 import LastPokemonImage from "./LastPokemonImage";
 import PokemonDetailScreen from "../screens/PokemonDetailScreen";
+import MyPokemonScreen from "../screens/MyPokemonScreen";
+
 import { Button, IconButton } from "react-native-paper";
 
 const Drawer = createDrawerNavigator();
@@ -41,6 +43,42 @@ const DashboardStackScreen = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} />
+    </Stack.Navigator>
+  );
+};
+
+const MyPokemonStackScreen = ({ navigation }) => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="MyPokemon"
+        component={MyPokemonScreen}
+        options={{
+          headerTitleAlign: "center",
+          title: "My Pokemons",
+          headerShown: true,
+          headerLeft: () => (
+            <IconButton
+              icon="menu"
+              onPress={() => {
+                navigation.toggleDrawer();
+              }}
+            />
+          ),
+          headerRight: () => <LastPokemonImage />,
+        }}
+      />
+      <Stack.Screen
+        name="PokemonDetail"
+        component={PokemonDetailScreen}
+        options={({ route }) => ({
+          headerShown: false,
+          title:
+            route.params && route.params.customTitle
+              ? route.params.customTitle
+              : "Pokemon Details",
+        })}
+      />
     </Stack.Navigator>
   );
 };
@@ -120,7 +158,7 @@ const Navigation = () => {
           successCallback: (snapshot) => {
             if (snapshot) {
               const { pokemon, energy } = snapshot.val();
-              
+
               dispatch({
                 type: "user/setPokemons",
                 payload: pokemon ? Object.values(pokemon) : [],
@@ -194,7 +232,7 @@ const Navigation = () => {
               ),
             })}
           />
-          <Drawer.Screen
+          {/* <Drawer.Screen
             name="PokemonCatchers"
             component={DashboardStackScreen}
             options={{
@@ -206,19 +244,20 @@ const Navigation = () => {
                 />
               ),
             }}
-          />
+          /> */}
           <Drawer.Screen
             name="MyPokemons"
-            component={DashboardStackScreen}
-            options={{
-              title: "My Pokemons",
+            component={MyPokemonStackScreen}
+            options={({ route }) => ({
+              headerShadowVisible: false,
+              headerShown: false,
               drawerIcon: ({ color }) => (
                 <Image
                   style={styles.drawerIcon}
-                  source={require("../assets/login.png")}
+                  source={require("../assets/forgot.png")}
                 />
               ),
-            }}
+            })}
           />
         </Drawer.Navigator>
       </NavigationContainer>

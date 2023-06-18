@@ -24,7 +24,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 const PokemonDetailScreen = ({ navigation, route }) => {
   const { user, energy } = useSelector((state) => state.USER);
-  const { pokemon } = route.params;
+  const { pokemon, viewOnly } = route.params;
   const { details } = pokemon;
   const type = details.types[0].type.name;
   const [capturing, setCapturing] = useState(false);
@@ -294,7 +294,7 @@ const PokemonDetailScreen = ({ navigation, route }) => {
         </View>
 
         <View style={styles.detailsContainer}>
-          {energy.chance ? (
+          {viewOnly ? null : energy.chance ? (
             <Button
               onPress={handleCapture}
               disabled={capturing}
@@ -316,6 +316,7 @@ const PokemonDetailScreen = ({ navigation, route }) => {
             </Button>
           )}
           <TabView
+            style={viewOnly ? { marginTop: 20 } : null}
             lazy
             renderLazyPlaceholder={renderLazyPlaceholder}
             renderTabBar={renderTabBar}
@@ -362,7 +363,12 @@ const PokemonDetailScreen = ({ navigation, route }) => {
               icon="eye"
               buttonColor="#1BC5BD"
               labelStyle={{ color: "#fff" }}
-              onPress={() => setCaptureSuccess(false)}
+              onPress={() => {
+                setCaptureSuccess(false);
+                navigation.navigate("MyPokemons", {
+                  screen: "MyPokemon",
+                });
+              }}
             >
               My Pokemons
             </Button>

@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Text, View, SafeAreaView, FlatList, StyleSheet, ScrollView } from "react-native";
+import {
+  Text,
+  View,
+  SafeAreaView,
+  FlatList,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import { apiGet, apiUrl } from "../lib/api";
 import Pokemon from "../components/Pokemon";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +17,6 @@ import {
   SegmentedButtons,
 } from "react-native-paper";
 import { checkEnergy } from "../lib/user";
-
 
 const PokemonListScreen = ({ navigation, route }) => {
   const { user } = useSelector((state) => state.USER);
@@ -109,14 +115,7 @@ const PokemonListScreen = ({ navigation, route }) => {
         String(value).toLowerCase()
       );
 
-      if (segment == "All") {
-        return values.some((value) => value.includes(searchTerm.toLowerCase()));
-      }
-
-      return (
-        values.some((value) => value.includes(searchTerm.toLowerCase())) &&
-        obj.details.types[0].type.name == segment
-      );
+      return values.some((value) => value.includes(searchTerm.toLowerCase()));
     });
   };
 
@@ -159,7 +158,12 @@ const PokemonListScreen = ({ navigation, route }) => {
   const renderFooter = () => {
     return next ? (
       <View>
-        <Button size={30} disabled={loadingMore} loading={loadingMore} onPress={loadMore}>
+        <Button
+          size={30}
+          disabled={loadingMore}
+          loading={loadingMore}
+          onPress={loadMore}
+        >
           Load More
         </Button>
       </View>
@@ -220,8 +224,8 @@ const PokemonListScreen = ({ navigation, route }) => {
     return result;
   };
 
-  const renderHeader = () => {
-    return (
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={{ margin: 10 }}>
         <Searchbar
           placeholder="Search"
@@ -230,22 +234,7 @@ const PokemonListScreen = ({ navigation, route }) => {
           inputStyle={{ paddingBottom: 10 }}
           style={styles.searchInput}
         />
-
-        {/* <ScrollView horizontal>
-          <SegmentedButtons
-            style={styles.segmentButtons}
-            value={segment}
-            onValueChange={setSegment}
-            buttons={segmentButtons()}
-          />
-        </ScrollView> */}
       </View>
-    );
-  };
-
-  return (
-    <SafeAreaView>
-
       <FlatList
         ref={flatListRef}
         refreshing={refreshing}
@@ -260,7 +249,6 @@ const PokemonListScreen = ({ navigation, route }) => {
         )}
         keyExtractor={(item, index) => index.toString()}
         ListFooterComponent={renderFooter}
-        ListHeaderComponent={renderHeader}
       />
 
       {scrollDirection == "down" && offset ? (

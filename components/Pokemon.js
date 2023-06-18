@@ -4,7 +4,7 @@ import PokemonImage from "./PokemonImage";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const Pokemon = React.memo(({ pokemon, skeleton }) => {
+const Pokemon = React.memo(({ pokemon, viewOnly }) => {
   const navigation = useNavigation();
   const { details } = pokemon;
   const type = details.types[0].type.name;
@@ -78,12 +78,10 @@ const Pokemon = React.memo(({ pokemon, skeleton }) => {
   };
 
   const handleDetail = () => {
-    navigation.navigate("Pokemons", {
-      screen: "PokemonDetail",
-      params: {
-        customTitle: pokemon.name,
-        pokemon,
-      },
+    navigation.navigate("PokemonDetail", {
+      customTitle: pokemon.name,
+      pokemon,
+      viewOnly
     });
   };
 
@@ -96,7 +94,7 @@ const Pokemon = React.memo(({ pokemon, skeleton }) => {
         imageStyle={{ borderRadius: 10 }}
       >
         <View style={styles.headContainer}>
-          <Text style={styles.name}>{pokemon.name}</Text>
+          <Text style={styles.name}>{details.name}</Text>
           <Text style={styles.type}>{details.types[0].type.name}</Text>
         </View>
         <View style={styles.contentContainer}>
