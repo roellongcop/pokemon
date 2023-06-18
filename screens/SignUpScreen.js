@@ -15,12 +15,11 @@ import authStyles from "../styles/authStyles";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { storeData } from "../lib/storage";
 import NetInfo from "@react-native-community/netinfo";
-import { pushData } from "../firebaseConfig";
+import { pushData, readData } from "../firebaseConfig";
 import { auth } from "../firebaseConfig";
 import { setData } from "../firebaseConfig";
 
 const SignUpScreen = ({ navigation }) => {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -53,10 +52,10 @@ const SignUpScreen = ({ navigation }) => {
       link: `users/${user.uid}/energy`,
       data: {
         chance: 3,
-        time: new Date().getTime()
+        time: new Date().getTime(),
       },
     });
-  }
+  };
 
   const handleSignUp = () => {
     setLoading(true);
@@ -67,10 +66,28 @@ const SignUpScreen = ({ navigation }) => {
         addStartPokemon(user);
         addStartEnery(user);
 
+        readData({
+          link: "leaderboard",
+          successCallback: (snapshot) => {
+            if (snapshot && snapshot.val()) {
+            } else {
+              setData({
+                link: 'leaderboard',
+                data: {
+                  uid: user.uid,
+                  totalPokemons: 3,
+                  time: new Date().getTime(),
+                },
+              });
+            }
+          },
+        });
+
         storeData("currentUser", {
           user,
           credential: { email, password },
         });
+
         setLoading(false);
       })
       .catch((error) => {

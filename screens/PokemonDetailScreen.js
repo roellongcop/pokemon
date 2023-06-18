@@ -17,13 +17,13 @@ import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { Button, Chip, IconButton } from "react-native-paper";
 import { apiGet } from "../lib/api";
 import { checkEnergy } from "../lib/user";
-import { pushData, setData } from "../firebaseConfig";
+import { pushData, readData, setData } from "../firebaseConfig";
 import { useSelector } from "react-redux";
 import { StatusBar } from "expo-status-bar";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const PokemonDetailScreen = ({ navigation, route }) => {
-  const { user, energy } = useSelector((state) => state.USER);
+  const { user, energy, pokemons } = useSelector((state) => state.USER);
   const { pokemon, viewOnly } = route.params;
   const { details } = pokemon;
   const type = details.types[0].type.name;
@@ -227,6 +227,7 @@ const PokemonDetailScreen = ({ navigation, route }) => {
       const randomNumber = Math.floor(Math.random() * 2) + 1;
 
       if (randomNumber == 2) {
+        const newPokemonLength = pokemons.length + 1;
         pushData({
           link: `users/${user.uid}/pokemon`,
           data: details.id,
@@ -239,6 +240,25 @@ const PokemonDetailScreen = ({ navigation, route }) => {
               data: {
                 chance: energy.chance == 0 ? 0 : energy.chance - 1,
                 time: new Date().getTime(),
+              },
+            });
+
+            readData({
+              link: "leaderboard",
+              successCallback: (snapshot) => {
+                if (snapshot && snapshot.val()) {
+                  const leaderboard = snapshot.val();
+                  if (leaderboard.totalPokemons < newPokemonLength) {
+                    setData({
+                      link: "leaderboard",
+                      data: {
+                        uid: user.uid,
+                        totalPokemons: newPokemonLength,
+                        time: new Date().getTime(),
+                      },
+                    });
+                  }
+                }
               },
             });
           },
