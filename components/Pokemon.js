@@ -5,10 +5,8 @@ import { Text } from "react-native";
 import PokemonImage from "./PokemonImage";
 import { ImageBackground } from "react-native";
 
-const Pokemon = ({ pokemon, index }) => {
+const Pokemon = React.memo(({ pokemon }) => {
   const { details } = pokemon;
-  // const type = 'water';
-  const type = details.types[0].type.name || "water";
 
   const [imageSource, setImageSource] = useState(
     require("../assets/water.png")
@@ -17,31 +15,32 @@ const Pokemon = ({ pokemon, index }) => {
   // Function to handle image source update
   const updateImageSource = () => {
     switch (details.types[0].type.name) {
+      case "normal":
+        setImageSource(require("../assets/normal.png"));
+        break;
+
       case "fighting":
       case "ghost":
       case "unknown":
-        const fighting = require("../assets/fighting.png");
-        setImageSource(fighting);
+        setImageSource(require("../assets/fighting.png"));
+        break;
       case "water":
       case "flying":
       case "electric":
       case "ice":
-        const water = require("../assets/water.png");
-        setImageSource(water);
+        setImageSource(require("../assets/water.png"));
         break;
 
       case "fire":
       case "steel":
       case "dragon":
-        const fire = require("../assets/fire.png");
-        setImageSource(fire);
+        setImageSource(require("../assets/fire.png"));
         break;
 
       case "grass":
       case "psychic":
       case "fairy":
-        const grass = require("../assets/grass.png");
-        setImageSource(grass);
+        setImageSource(require("../assets/grass.png"));
         break;
 
       case "bug":
@@ -51,8 +50,7 @@ const Pokemon = ({ pokemon, index }) => {
       case "shadow":
 
       case "dark":
-        const bug = require("../assets/bug.png");
-        setImageSource(bug);
+        setImageSource(require("../assets/bug.png"));
         break;
 
       default:
@@ -88,7 +86,9 @@ const Pokemon = ({ pokemon, index }) => {
       >
         <View style={styles.headContainer}>
           <Text style={styles.name}>{pokemon.name}</Text>
-          <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 10}}>{details.types[0].type.name}</Text>
+          <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 10 }}>
+            {details.types[0].type.name}
+          </Text>
         </View>
         <View style={styles.contentContainer}>
           <View>
@@ -106,7 +106,7 @@ const Pokemon = ({ pokemon, index }) => {
       </ImageBackground>
     </View>
   );
-};
+});
 
 export default Pokemon;
 

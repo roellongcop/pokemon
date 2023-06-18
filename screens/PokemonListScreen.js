@@ -4,7 +4,13 @@ import { apiGet, apiUrl } from "../lib/api";
 import Pokemon from "../components/Pokemon";
 import { useDispatch, useSelector } from "react-redux";
 import { StyleSheet } from "react-native";
-import { IconButton } from "react-native-paper";
+import {
+  Button,
+  IconButton,
+  Searchbar,
+  SegmentedButtons,
+} from "react-native-paper";
+import { ScrollView } from "react-native";
 
 const PokemonListScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -12,8 +18,10 @@ const PokemonListScreen = ({ navigation, route }) => {
     (state) => state.POKEMON
   );
 
+  const [segment, setSegment] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [loadingMore, setLoadingMore] = useState(false);
   const flatListRef = useRef(null);
   const [refreshing, setRefreshing] = useState(false);
   const [offset, setOffset] = useState(0);
@@ -26,18 +34,24 @@ const PokemonListScreen = ({ navigation, route }) => {
     return json;
   };
 
+  const addPokemonDetail = async (pokemons) => {
+    for (const key in pokemons) {
+      if (Object.hasOwnProperty.call(pokemons, key)) {
+        const pokemon = pokemons[key];
+        pokemons[key]["details"] = await getPokemonDetails(pokemon.url);
+      }
+    }
+
+    return pokemons;
+  };
+
   const loadPokemons = (callback = () => {}) => {
     apiGet(`${apiUrl}pokemon`, {
       success: async (data) => {
         if (data) {
           const { count, next, previous, results } = data;
 
-          for (const key in results) {
-            if (Object.hasOwnProperty.call(results, key)) {
-              const pokemon = results[key];
-              results[key]["details"] = await getPokemonDetails(pokemon.url);
-            }
-          }
+          const pokemons = await addPokemonDetail(results);
 
           dispatch({
             type: "pokemon/setState",
@@ -45,11 +59,17 @@ const PokemonListScreen = ({ navigation, route }) => {
               count,
               next,
               previous,
-              pokemons: results,
+              pokemons,
             },
           });
         }
         callback(data);
+      },
+      error: (e) => {
+        setRefreshing(false);
+      },
+      offline: (state) => {
+        setRefreshing(false);
       },
     });
   };
@@ -86,14 +106,14 @@ const PokemonListScreen = ({ navigation, route }) => {
         String(value).toLowerCase()
       );
 
-      // if (segment == "All") {
-      return values.some((value) => value.includes(searchTerm.toLowerCase()));
-      // }
+      if (segment == "All") {
+        return values.some((value) => value.includes(searchTerm.toLowerCase()));
+      }
 
-      // return (
-      //   values.some((value) => value.includes(searchTerm.toLowerCase())) &&
-      //   obj.user == segment
-      // );
+      return (
+        values.some((value) => value.includes(searchTerm.toLowerCase())) &&
+        obj.details.types[0].type.name == segment
+      );
     });
   };
 
@@ -103,8 +123,119 @@ const PokemonListScreen = ({ navigation, route }) => {
     }
   };
 
+  const loadMore = () => {
+    setLoadingMore(true);
+    apiGet(next, {
+      success: async (data) => {
+        if (data) {
+          const { count, next, previous, results } = data;
+
+          const pokemons = await addPokemonDetail(results);
+
+          dispatch({
+            type: "pokemon/next",
+            payload: {
+              count,
+              next,
+              previous,
+              pokemons,
+            },
+          });
+        }
+        setLoadingMore(false);
+      },
+      error: (e) => {
+        setLoadingMore(false);
+      },
+      offline: (state) => {
+        setLoadingMore(false);
+      },
+    });
+  };
+
+  const renderFooter = () => {
+    return next ? (
+      <View>
+        <Button size={30} loading={loadingMore} onPress={loadMore}>
+          Load More
+        </Button>
+      </View>
+    ) : null;
+  };
+
+  const segmentButtons = () => {
+    const types = [
+      "normal",
+      "fighting",
+      "flying",
+      "poison",
+      "ground",
+      "rock",
+      "bug",
+      "ghost",
+      "steel",
+      "fire",
+      "water",
+      "grass",
+      "electric",
+      "psychic",
+      "ice",
+      "dragon",
+      "dark",
+      "fairy",
+      "unknown",
+      "shadow",
+    ];
+    let result = [
+      {
+        value: "All",
+        label: "All",
+        // icon: "crowd",
+        showSelectedCheck: true,
+        checkedColor: "#fff",
+        style: {
+          backgroundColor: segment == "All" ? "#337ab7" : "#fff",
+          borderColor: segment == "All" ? "#337ab7" : "#ddd",
+        },
+      },
+    ];
+
+    types.forEach((type) => {
+      result.push({
+        value: type,
+        label: type,
+        // icon: "crowd",
+        showSelectedCheck: true,
+        checkedColor: "#fff",
+        style: {
+          backgroundColor: segment == type ? "#337ab7" : "#fff",
+          borderColor: segment == type ? "#337ab7" : "#ddd",
+        },
+      });
+    });
+
+    return result;
+  };
+
   return (
     <SafeAreaView>
+      <Searchbar
+        placeholder="Search"
+        onChangeText={setSearchTerm}
+        value={searchTerm}
+        inputStyle={{ paddingBottom: 10 }}
+        style={styles.searchInput}
+      />
+
+      <ScrollView horizontal style={{ margin: 10 }}>
+        <SegmentedButtons
+          style={styles.segmentButtons}
+          value={segment}
+          onValueChange={setSegment}
+          buttons={segmentButtons()}
+        />
+      </ScrollView>
+
       <FlatList
         ref={flatListRef}
         refreshing={refreshing}
@@ -118,6 +249,7 @@ const PokemonListScreen = ({ navigation, route }) => {
           <Pokemon pokemon={item} index={index} />
         )}
         keyExtractor={(item, index) => index.toString()}
+        ListFooterComponent={renderFooter}
       />
 
       {scrollDirection == "down" && offset ? (
@@ -139,5 +271,18 @@ const styles = StyleSheet.create({
   contentContainer: {
     width: "100%",
     padding: 10,
+  },
+  searchInput: {
+    backgroundColor: "#fff",
+    borderColor: "#ddd",
+    borderWidth: 1,
+    height: 50,
+    margin: 10,
+    marginBottom: 0,
+  },
+  segmentButtons: {
+    height: 45,
+    paddingBottom: 7,
+    paddingVertical: 0,
   },
 });
