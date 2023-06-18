@@ -32,8 +32,6 @@ const MyPokemonScreen = ({ navigation, route }) => {
     loadPokemons();
   }, [pokemons]);
 
-  
-
   const getPokemonDetails = async (url) => {
     const result = await fetch(url);
     const json = await result.json();
@@ -65,19 +63,17 @@ const MyPokemonScreen = ({ navigation, route }) => {
       });
     }
 
-    setMyPokemons(result);
+    setMyPokemons(result.reverse());
     callback();
   };
 
-  const filteredPokemons = () => {
-    return myPokemons.filter((obj) => {
-      const values = Object.values(obj).map((value) =>
-        String(value).toLowerCase()
-      );
+  const filteredPokemons = myPokemons.filter((obj) => {
+    const values = Object.values(obj).map((value) =>
+      String(value).toLowerCase()
+    );
 
-      return values.some((value) => value.includes(searchTerm.toLowerCase()));
-    });
-  };
+    return values.some((value) => value.includes(searchTerm.toLowerCase()));
+  });
 
   const handleRefresh = () => {
     checkEnergy(user);
@@ -100,8 +96,6 @@ const MyPokemonScreen = ({ navigation, route }) => {
     setOffset(y);
   };
 
-  
-
   const scrollToOffset = (offset) => {
     if (flatListRef.current) {
       flatListRef.current.scrollToOffset({ offset: offset, animated: true });
@@ -109,7 +103,7 @@ const MyPokemonScreen = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={{ margin: 10 }}>
         <Searchbar
           placeholder="Search"
@@ -122,13 +116,14 @@ const MyPokemonScreen = ({ navigation, route }) => {
         />
       </View>
 
+      <Text style={{ marginLeft: 10 }}>Showing {filteredPokemons.length} of {myPokemons.length} records</Text>
       <FlatList
         ref={flatListRef}
         refreshing={refreshing}
         onRefresh={handleRefresh}
         onScroll={handleScroll}
         scrollEventThrottle={16}
-        data={filteredPokemons()}
+        data={filteredPokemons}
         numColumns={2}
         contentContainerStyle={styles.contentContainer}
         renderItem={({ item, index }) => (

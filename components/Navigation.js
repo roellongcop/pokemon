@@ -254,7 +254,7 @@ const Navigation = () => {
               drawerIcon: ({ color }) => (
                 <Image
                   style={styles.drawerIcon}
-                  source={require("../assets/forgot.png")}
+                  source={require("../assets/login.png")}
                 />
               ),
             })}

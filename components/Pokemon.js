@@ -143,8 +143,9 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   container: {
-    justifyContent: "center",
+    // justifyContent: "center",
     marginHorizontal: 5,
+    marginVertical: -3,
     width: "48%", // Adjust the width as needed
     height: 130, // Adjust the height as needed
   },

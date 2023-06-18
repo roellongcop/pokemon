@@ -109,16 +109,13 @@ const PokemonListScreen = ({ navigation, route }) => {
     });
   }, []);
 
-  const filteredPokemons = () => {
-    return pokemons.filter((obj) => {
-      const values = Object.values(obj).map((value) =>
-        String(value).toLowerCase()
-      );
+  const filteredPokemons = pokemons.filter((obj) => {
+    const values = Object.values(obj).map((value) =>
+      String(value).toLowerCase()
+    );
 
-      return values.some((value) => value.includes(searchTerm.toLowerCase()));
-    });
-  };
-
+    return values.some((value) => value.includes(searchTerm.toLowerCase()));
+  });
   const scrollToOffset = (offset) => {
     if (flatListRef.current) {
       flatListRef.current.scrollToOffset({ offset: offset, animated: true });
@@ -235,13 +232,18 @@ const PokemonListScreen = ({ navigation, route }) => {
           style={styles.searchInput}
         />
       </View>
+
+      <Text style={{ marginLeft: 10 }}>
+        Showing {filteredPokemons.length} of {pokemons.length} records
+      </Text>
+
       <FlatList
         ref={flatListRef}
         refreshing={refreshing}
         onRefresh={handleRefresh}
         onScroll={handleScroll}
         scrollEventThrottle={16}
-        data={filteredPokemons()}
+        data={filteredPokemons}
         numColumns={2}
         contentContainerStyle={styles.contentContainer}
         renderItem={({ item, index }) => (
