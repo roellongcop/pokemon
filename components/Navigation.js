@@ -114,20 +114,20 @@ const Navigation = () => {
       dispatch({ type: "user/setUser", payload: user });
       setUserData(user);
 
-      // if (user) {
-      //   readData({
-      //     link: `users/${user.uid}`,
-      //     successCallback: (snapshot) => {
-      //       if (snapshot) {
-      //         const { pokemon } = snapshot.val();
-      //         dispatch({
-      //           type: "user/setPokemons",
-      //           payload: pokemon ? Object.values(pokemon) : [],
-      //         });
-      //       }
-      //     },
-      //   });
-      // }
+      if (user) {
+        readData({
+          link: `users/${user.uid}`,
+          successCallback: (snapshot) => {
+            if (snapshot) {
+              const { pokemon } = snapshot.val();
+              dispatch({
+                type: "user/setPokemons",
+                payload: pokemon ? Object.values(pokemon) : [],
+              });
+            }
+          },
+        });
+      }
     });
 
     return () => {};

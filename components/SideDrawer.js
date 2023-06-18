@@ -34,8 +34,9 @@ const SideDrawer = (props) => {
   };
 
   useEffect(() => {
-    firebaseSubscribe(`user/${user.uid}`, (snapshot) => {
+    firebaseSubscribe(`users/${user.uid}`, (snapshot) => {
       if (snapshot && snapshot.val()) {
+        console.log(pokemon);
         const { pokemon } = snapshot.val();
         dispatch({
           type: "user/setPokemons",
