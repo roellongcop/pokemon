@@ -19,6 +19,8 @@ import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import LoadingScreen from "../screens/LoadingScreen";
 import LastPokemonImage from "./LastPokemonImage";
+import PokemonDetailScreen from "../screens/PokemonDetailScreen";
+import { Button, IconButton } from "react-native-paper";
 
 const Drawer = createDrawerNavigator();
 
@@ -43,10 +45,38 @@ const DashboardStackScreen = () => {
   );
 };
 
-const PokemonStackScreen = () => {
+const PokemonStackScreen = ({ navigation }) => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="PokemonList" component={PokemonListScreen} />
+    <Stack.Navigator>
+      <Stack.Screen
+        name="PokemonList"
+        component={PokemonListScreen}
+        options={{
+          headerTitleAlign: "center",
+          title: "Pokemons",
+          headerShown: true,
+          headerLeft: () => (
+            <IconButton
+              icon="menu"
+              onPress={() => {
+                navigation.toggleDrawer();
+              }}
+            />
+          ),
+          headerRight: () => <LastPokemonImage />,
+        }}
+      />
+      <Stack.Screen
+        name="PokemonDetail"
+        component={PokemonDetailScreen}
+        options={({ route }) => ({
+          headerShown: false,
+          title:
+            route.params && route.params.customTitle
+              ? route.params.customTitle
+              : "Pokemon Details",
+        })}
+      />
     </Stack.Navigator>
   );
 };
@@ -84,20 +114,20 @@ const Navigation = () => {
       dispatch({ type: "user/setUser", payload: user });
       setUserData(user);
 
-      if (user) {
-        readData({
-          link: `users/${user.uid}`,
-          successCallback: (snapshot) => {
-            if (snapshot) {
-              const { pokemon } = snapshot.val();
-              dispatch({
-                type: "user/setPokemons",
-                payload: pokemon ? Object.values(pokemon) : [],
-              });
-            }
-          },
-        });
-      }
+      // if (user) {
+      //   readData({
+      //     link: `users/${user.uid}`,
+      //     successCallback: (snapshot) => {
+      //       if (snapshot) {
+      //         const { pokemon } = snapshot.val();
+      //         dispatch({
+      //           type: "user/setPokemons",
+      //           payload: pokemon ? Object.values(pokemon) : [],
+      //         });
+      //       }
+      //     },
+      //   });
+      // }
     });
 
     return () => {};
@@ -122,6 +152,7 @@ const Navigation = () => {
             drawerActiveBackgroundColor: "#e93e25",
             drawerActiveTintColor: "#fff",
             drawerInactiveTintColor: "#555",
+            headerTitleAlign: "center",
             headerRight: () => (
               <LastPokemonImage
                 style={{ marginRight: 10 }}
@@ -146,18 +177,20 @@ const Navigation = () => {
           <Drawer.Screen
             name="Pokemons"
             component={PokemonStackScreen}
-            options={{
+            options={({ route }) => ({
+              headerShadowVisible: false,
+              headerShown: false,
               drawerIcon: ({ color }) => (
                 <Image
                   style={styles.drawerIcon}
                   source={require("../assets/forgot.png")}
                 />
               ),
-            }}
+            })}
           />
           <Drawer.Screen
             name="PokemonCatchers"
-            component={PokemonStackScreen}
+            component={DashboardStackScreen}
             options={{
               title: "Pokemon Catchers",
               drawerIcon: ({ color }) => (
@@ -170,7 +203,7 @@ const Navigation = () => {
           />
           <Drawer.Screen
             name="MyPokemons"
-            component={PokemonStackScreen}
+            component={DashboardStackScreen}
             options={{
               title: "My Pokemons",
               drawerIcon: ({ color }) => (

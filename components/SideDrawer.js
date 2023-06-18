@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -14,7 +14,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "firebase/auth";
 import { removeData } from "../lib/storage";
-import { auth } from "../firebaseConfig";
+import { auth, firebaseSubscribe } from "../firebaseConfig";
 
 const SideDrawer = (props) => {
   const dispatch = useDispatch();
@@ -32,6 +32,19 @@ const SideDrawer = (props) => {
         console.log("error", code);
       });
   };
+
+  useEffect(() => {
+    firebaseSubscribe(`user/${user.uid}`, (snapshot) => {
+      if (snapshot && snapshot.val()) {
+        const { pokemon } = snapshot.val();
+        dispatch({
+          type: "user/setPokemons",
+          payload: pokemon ? Object.values(pokemon) : [],
+        });
+      }
+    });
+
+  }, []);
 
   return (
     <View style={{ flex: 1 }}>

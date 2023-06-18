@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
-import { View } from "react-native";
-import { Text } from "react-native";
+import { View, Text, ImageBackground, StyleSheet } from "react-native";
 import PokemonImage from "./PokemonImage";
-import { ImageBackground } from "react-native";
+import { TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-const Pokemon = React.memo(({ pokemon }) => {
+const Pokemon = React.memo(({ pokemon, skeleton }) => {
+  const navigation = useNavigation();
   const { details } = pokemon;
+  const type = details.types[0].type.name;
 
   const [imageSource, setImageSource] = useState(
     require("../assets/water.png")
@@ -14,7 +15,7 @@ const Pokemon = React.memo(({ pokemon }) => {
 
   // Function to handle image source update
   const updateImageSource = () => {
-    switch (details.types[0].type.name) {
+    switch (type) {
       case "normal":
         setImageSource(require("../assets/normal.png"));
         break;
@@ -76,8 +77,18 @@ const Pokemon = React.memo(({ pokemon }) => {
     );
   };
 
+  const handleDetail = () => {
+    navigation.navigate("Pokemons", {
+      screen: "PokemonDetail",
+      params: {
+        customTitle: pokemon.name,
+        pokemon,
+      },
+    });
+  };
+
   return (
-    <View style={styles.container}>
+    <TouchableOpacity onPress={handleDetail} style={styles.container}>
       <ImageBackground
         source={imageSource}
         resizeMode="cover"
@@ -86,9 +97,7 @@ const Pokemon = React.memo(({ pokemon }) => {
       >
         <View style={styles.headContainer}>
           <Text style={styles.name}>{pokemon.name}</Text>
-          <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 10 }}>
-            {details.types[0].type.name}
-          </Text>
+          <Text style={styles.type}>{details.types[0].type.name}</Text>
         </View>
         <View style={styles.contentContainer}>
           <View>
@@ -104,13 +113,19 @@ const Pokemon = React.memo(({ pokemon }) => {
           </View>
         </View>
       </ImageBackground>
-    </View>
+    </TouchableOpacity>
   );
 });
 
 export default Pokemon;
 
 const styles = StyleSheet.create({
+  placeholder: {
+    backgroundColor: "#ccc",
+    borderRadius: 5,
+    color: "#ccc",
+  },
+  type: { color: "#fff", fontWeight: "bold", fontSize: 10 },
   image: {
     position: "relative",
   },
@@ -131,8 +146,7 @@ const styles = StyleSheet.create({
   },
   container: {
     justifyContent: "center",
-    margin: 5,
-    marginBottom: 0,
+    marginHorizontal: 5,
     width: "48%", // Adjust the width as needed
     height: 130, // Adjust the height as needed
   },

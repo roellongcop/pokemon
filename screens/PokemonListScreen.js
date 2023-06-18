@@ -156,7 +156,7 @@ const PokemonListScreen = ({ navigation, route }) => {
   const renderFooter = () => {
     return next ? (
       <View>
-        <Button size={30} loading={loadingMore} onPress={loadMore}>
+        <Button size={30} disabled={loadingMore} loading={loadingMore} onPress={loadMore}>
           Load More
         </Button>
       </View>
@@ -191,7 +191,7 @@ const PokemonListScreen = ({ navigation, route }) => {
         value: "All",
         label: "All",
         // icon: "crowd",
-        showSelectedCheck: true,
+        // showSelectedCheck: true,
         checkedColor: "#fff",
         style: {
           backgroundColor: segment == "All" ? "#337ab7" : "#fff",
@@ -205,7 +205,7 @@ const PokemonListScreen = ({ navigation, route }) => {
         value: type,
         label: type,
         // icon: "crowd",
-        showSelectedCheck: true,
+        // showSelectedCheck: true,
         checkedColor: "#fff",
         style: {
           backgroundColor: segment == type ? "#337ab7" : "#fff",
@@ -217,24 +217,31 @@ const PokemonListScreen = ({ navigation, route }) => {
     return result;
   };
 
+  const renderHeader = () => {
+    return (
+      <View style={{ margin: 10 }}>
+        <Searchbar
+          placeholder="Search"
+          onChangeText={setSearchTerm}
+          value={searchTerm}
+          inputStyle={{ paddingBottom: 10 }}
+          style={styles.searchInput}
+        />
+
+        {/* <ScrollView horizontal>
+          <SegmentedButtons
+            style={styles.segmentButtons}
+            value={segment}
+            onValueChange={setSegment}
+            buttons={segmentButtons()}
+          />
+        </ScrollView> */}
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView>
-      <Searchbar
-        placeholder="Search"
-        onChangeText={setSearchTerm}
-        value={searchTerm}
-        inputStyle={{ paddingBottom: 10 }}
-        style={styles.searchInput}
-      />
-
-      <ScrollView horizontal style={{ margin: 10 }}>
-        <SegmentedButtons
-          style={styles.segmentButtons}
-          value={segment}
-          onValueChange={setSegment}
-          buttons={segmentButtons()}
-        />
-      </ScrollView>
 
       <FlatList
         ref={flatListRef}
@@ -246,10 +253,11 @@ const PokemonListScreen = ({ navigation, route }) => {
         numColumns={2}
         contentContainerStyle={styles.contentContainer}
         renderItem={({ item, index }) => (
-          <Pokemon pokemon={item} index={index} />
+          <Pokemon pokemon={item} index={index} skeleton={refreshing} />
         )}
         keyExtractor={(item, index) => index.toString()}
         ListFooterComponent={renderFooter}
+        ListHeaderComponent={renderHeader}
       />
 
       {scrollDirection == "down" && offset ? (
@@ -277,12 +285,10 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderWidth: 1,
     height: 50,
-    margin: 10,
     marginBottom: 0,
   },
   segmentButtons: {
-    height: 45,
-    paddingBottom: 7,
-    paddingVertical: 0,
+    marginTop: 5,
+    marginBottom: 0,
   },
 });
