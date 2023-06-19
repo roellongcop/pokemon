@@ -8,6 +8,7 @@ import { Badge } from "react-native-paper";
 import { checkEnergy } from "../lib/user";
 
 const LeaderBoardScreen = () => {
+  const { user } = useSelector((state) => state.USER);
   const [leaderboards, setLeaderboards] = useState([]);
 
   const flatListRef = useRef(null);
