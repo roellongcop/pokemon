@@ -30,12 +30,12 @@ To run the Pokemon Catcher app locally, follow these steps:
 
 Clone the repository: git clone https://github.com/roellongcop/pokemon
 
-Navigate to the project directory: cd pokemon-catcher
+Navigate to the project directory: 
 
 Install the dependencies: 
 
 ```sh
-cd pokemon-catcher
+cd pokemon
 npm install or yarn install
 ```
 
