@@ -1,20 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, SafeAreaView, StyleSheet } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import {
+  Text,
+  View,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  RefreshControl,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { StatusBar } from "expo-status-bar";
-import { firebaseSubscribe, readData } from "../firebaseConfig";
+import { firebaseOff, firebaseSubscribe, readData } from "../firebaseConfig";
 import PokemonImage from "../components/PokemonImage";
 import { Button, IconButton } from "react-native-paper";
 import { ImageBackground } from "react-native";
 import { apiGet, apiUrl } from "../lib/api";
-import Pokemon from "../components/Pokemon";
 import { ScrollView } from "react-native-gesture-handler";
-import { TouchableOpacity } from "react-native";
+import { ActivityIndicator } from "react-native";
 
 const HomeScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const { user, pokemons } = useSelector((state) => state.USER);
+  const { user } = useSelector((state) => state.USER);
   const { lastPokemonId, name, time, totalPokemons, uid } = useSelector(
     (state) => state.LEADERBOARD
   );
@@ -23,34 +28,25 @@ const HomeScreen = ({ navigation, route }) => {
   const [wildPokemons, setWildPokemons] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  const populateMyPokemons = async () => {
+  const populateMyPokemons = async (pokemons) => {
     let result = [];
 
-    try {
-      for (let i = pokemons.length - 3; i < pokemons.length; i++) {
-        const pokemonId = pokemons[i];
+    for (let i = pokemons.length - 3; i < pokemons.length; i++) {
+      const pokemonId = pokemons[i];
 
-          try {
-            const details = await getPokemonDetails(
-              `${apiUrl}pokemon/${pokemonId}`
-            );
-            result.push({
-              name: details.name,
-              id: details.id,
-              details,
-            });
-          } catch (error) {
-            console.error(
-              `Error fetching details for Pokemon with ID ${pokemonId}:`,
-              error
-            );
-          }
-      }
-
-      setMyPokemons(result);
-    } catch (error) {
-      console.error("Error populating my Pokemons:", error);
+      try {
+        const details = await getPokemonDetails(
+          `${apiUrl}pokemon/${pokemonId}`
+        );
+        result.push({
+          name: details.name,
+          id: details.id,
+          details,
+        });
+      } catch (error) {}
     }
+
+    setMyPokemons(result);
   };
 
   const getPokemonDetails = async (url) => {
@@ -92,21 +88,33 @@ const HomeScreen = ({ navigation, route }) => {
     });
   };
 
-  useEffect(() => {
+  const loadMyPokemons = () => {
     readData({
       link: `users/${user.uid}/pokemon`,
       successCallback: (snapshot) => {
         if (snapshot) {
           const pokemon = snapshot.val() || [];
-          dispatch({
-            type: "user/setPokemons",
-            payload: pokemon ? Object.values(pokemon) : [],
-          });
 
-          populateMyPokemons();
+          populateMyPokemons(pokemon ? Object.values(pokemon) : []);
         }
+
+        setRefreshing(false);
+      },
+      errorCallback: () => {
+        setRefreshing(false);
       },
     });
+  };
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    loadMyPokemons();
+
+    loadPokemons();
+  };
+
+  useEffect(() => {
+    loadMyPokemons();
 
     loadPokemons();
 
@@ -115,12 +123,20 @@ const HomeScreen = ({ navigation, route }) => {
         dispatch({ type: "leadboard/setState", payload: snapshot.val() });
       }
     });
+
+    return () => {
+      firebaseOff("leaderboard");
+    };
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
         <ImageBackground
           source={require("../assets/water.png")}
           resizeMode="cover"
@@ -169,27 +185,31 @@ const HomeScreen = ({ navigation, route }) => {
               </Button>
             </View>
             <View style={styles.pokemonContainer}>
-              {myPokemons.map((pokemon, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => {
-                    navigation.navigate("PokemonDetail", {
-                      customTitle: pokemon.name,
-                      pokemon,
-                      viewOnly: true,
-                    });
-                  }}
-                >
-                  <View style={styles.myPokemon}>
-                    <PokemonImage
-                      pokemonId={pokemon.id}
-                      width={100}
-                      height={100}
-                    />
-                    <Text style={styles.pokemonName}>{pokemon.name}</Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
+              {!myPokemons.length ? (
+                <ActivityIndicator size="small" color="#0000ff" />
+              ) : (
+                myPokemons.map((pokemon, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => {
+                      navigation.navigate("PokemonDetail", {
+                        customTitle: pokemon.name,
+                        pokemon,
+                        viewOnly: true,
+                      });
+                    }}
+                  >
+                    <View style={styles.myPokemon}>
+                      <PokemonImage
+                        pokemonId={pokemon.id}
+                        width={100}
+                        height={100}
+                      />
+                      <Text style={styles.pokemonName}>{pokemon.name}</Text>
+                    </View>
+                  </TouchableOpacity>
+                ))
+              )}
             </View>
           </View>
 

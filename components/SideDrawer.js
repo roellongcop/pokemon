@@ -15,7 +15,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "firebase/auth";
 import { removeData } from "../lib/storage";
 import { auth, firebaseSubscribe, setData } from "../firebaseConfig";
-import { startAfter } from "firebase/database";
 
 const SideDrawer = (props) => {
   const dispatch = useDispatch();
@@ -52,6 +51,10 @@ const SideDrawer = (props) => {
   }, []);
 
   const stars = () => {
+
+    if (!energy) {
+      return;
+    }
     let stars = [];
     for (let index = 0; index < energy.chance; index++) {
       stars.push(<Ionicons key={index} name="star" size={22} color="yellow" />);
@@ -60,7 +63,6 @@ const SideDrawer = (props) => {
     for (let index = 3; index > energy.chance; index--) {
       stars.push(<Ionicons key={index} name="star" size={22} color="white" />);
     }
-
 
     return stars;
   };

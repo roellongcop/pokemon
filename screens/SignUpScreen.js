@@ -18,8 +18,10 @@ import NetInfo from "@react-native-community/netinfo";
 import { pushData, readData } from "../firebaseConfig";
 import { auth } from "../firebaseConfig";
 import { setData } from "../firebaseConfig";
+import { useDispatch } from "react-redux";
 
 const SignUpScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -47,12 +49,21 @@ const SignUpScreen = ({ navigation }) => {
     });
   };
 
-  const addStartEnery = (user) => {
+  const addStartEnery = (user, energy) => {
     setData({
       link: `users/${user.uid}/energy`,
+      data: energy,
+    });
+  };
+
+  const addUserDetails = (user) => {
+    setData({
+      link: `users/${user.uid}/details`,
       data: {
-        chance: 3,
-        time: new Date().getTime(),
+        uid: user.uid,
+        name: user.displayName || user.email.split("@")[0],
+        lastPokemonId: 3,
+        totalPokemons: 3,
       },
     });
   };
@@ -62,9 +73,25 @@ const SignUpScreen = ({ navigation }) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
+        const energy = {
+          chance: 3,
+          time: new Date().getTime(),
+        };
+
+        dispatch({ type: "user/setUser", payload: user });
+        dispatch({
+          type: "user/setPokemons",
+          payload: [1, 2, 3],
+        });
+
+        dispatch({
+          type: "user/setEnergy",
+          payload: energy,
+        });
 
         addStartPokemon(user);
-        addStartEnery(user);
+        addStartEnery(user, energy);
+        addUserDetails(user);
 
         readData({
           link: "leaderboard",

@@ -21,8 +21,9 @@ import LoadingScreen from "../screens/LoadingScreen";
 import LastPokemonImage from "./LastPokemonImage";
 import PokemonDetailScreen from "../screens/PokemonDetailScreen";
 import MyPokemonScreen from "../screens/MyPokemonScreen";
+import LeaderBoardScreen from "../screens/LeaderBoardScreen";
 
-import { Button, IconButton } from "react-native-paper";
+import { IconButton } from "react-native-paper";
 
 const Drawer = createDrawerNavigator();
 
@@ -35,6 +36,19 @@ const AuthStackScreen = () => {
 
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+    </Stack.Navigator>
+  );
+};
+
+
+const LeaderboardStackScreen = ({ navigation }) => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="LeaderBoard"
+        component={LeaderBoardScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };
@@ -220,7 +234,7 @@ const Navigation = () => {
             ),
           }}
         >
-          <Drawer.Screen
+          {/* <Drawer.Screen
             name="Dashboard"
             component={DashboardStackScreen}
             options={{
@@ -246,12 +260,12 @@ const Navigation = () => {
                 />
               ),
             })}
-          />
-          {/* <Drawer.Screen
+          /> */}
+          <Drawer.Screen
             name="PokemonCatchers"
-            component={DashboardStackScreen}
+            component={LeaderboardStackScreen}
             options={{
-              title: "Pokemon Catchers",
+              title: "Leader Board",
               drawerIcon: ({ color }) => (
                 <Image
                   style={styles.drawerIcon}
@@ -259,7 +273,7 @@ const Navigation = () => {
                 />
               ),
             }}
-          /> */}
+          />
           <Drawer.Screen
             name="MyPokemons"
             component={MyPokemonStackScreen}
