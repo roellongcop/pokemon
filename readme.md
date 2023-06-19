@@ -5,8 +5,8 @@ Pokemon Catcher is a simple mobile app that allows users to create an account an
 ## Working App
 #### Expo-Go
 https://expo.dev/@longcoproel/pokemon-catcher?serviceType=classic&distribution=expo-go
-#### Actual APK
-https://drive.google.com/file/d/1VKxr7KDnAvxatZnm8htur6f0dvwa_7rb/view?usp=sharing
+<!-- #### Actual APK
+https://drive.google.com/file/d/1VKxr7KDnAvxatZnm8htur6f0dvwa_7rb/view?usp=sharing -->
 
 ## Features
 - Sign Up: Users can create an account by providing their information.
