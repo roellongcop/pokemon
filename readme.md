@@ -75,38 +75,55 @@ npm start or yarn start
 ## Screenshots
 ##### AuthScreen 
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/AuthScreen.jpg?raw=true" style="width: 300px">
+
 ##### SignUpScreen
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/SignUpScreen.jpg?raw=true" style="width: 300px">
+
 ##### ForgotPasswordScreen
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/ForgotPasswordScreen.jpg?raw=true" style="width: 300px">
+
 ##### HomeScreen
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/HomeScreen.jpg?raw=true" style="width: 300px">
+
 ##### LeaderBoardScreen
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/LeaderBoardScreen.jpg?raw=true" style="width: 300px">
+
 ##### MyAccountScreen
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/MyAccountScreen.jpg?raw=true" style="width: 300px">
+
 ##### MyPokemonScreen
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/MyPokemonScreen.jpg?raw=true" style="width: 300px">
+
 ##### PokemonDetailScreen-Abilities
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Abilities.jpg?raw=true" style="width: 300px">
+
 ##### PokemonDetailScreen-Capture-Loading
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Capture-Loading.jpg?raw=true" style="width: 300px">
+
 ##### PokemonDetailScreen-Captured-Failed
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Captured-Failed.jpg?raw=true" style="width: 300px">
+
 ##### PokemonDetailScreen-Captured-Success
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Captured-Success.jpg?raw=true" style="width: 300px">
+
 ##### PokemonDetailScreen-Captured
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Captured.jpg?raw=true" style="width: 300px">
+
 ##### PokemonDetailScreen-Items
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Items.jpg?raw=true" style="width: 300px">
+
 ##### PokemonDetailScreen-Moves
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Moves.jpg?raw=true" style="width: 300px">
+
 ##### PokemonDetailScreen-Stats
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Stats.jpg?raw=true" style="width: 300px">
+
 ##### PokemonListScreen
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonListScreen.jpg?raw=true" style="width: 300px">
+
 ##### SideDrawer
 <img src="https://github.com/roellongcop/pokemon/blob/main/screenshots/SideDrawer.jpg?raw=true" style="width: 300px">
+
 ##### SplashScreen
 <img src="https://github.com/roellongcop/pokemon/blob/main/assets/splash.png?raw=true" style="width: 300px">
 
