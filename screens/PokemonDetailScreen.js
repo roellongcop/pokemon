@@ -23,7 +23,12 @@ import { StatusBar } from "expo-status-bar";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const PokemonDetailScreen = ({ navigation, route }) => {
-  const { user, energy, pokemons, details: userDetails } = useSelector((state) => state.USER);
+  const {
+    user,
+    energy,
+    pokemons,
+    details: userDetails,
+  } = useSelector((state) => state.USER);
   const { pokemon, viewOnly } = route.params;
   const { details } = pokemon;
   const type = details.types[0].type.name;
@@ -243,6 +248,14 @@ const PokemonDetailScreen = ({ navigation, route }) => {
               },
             });
 
+            setData({
+              link: `users/${user.uid}/details`,
+              data: {
+                lastPokemonId: details.id,
+                totalPokemons: newPokemonLength,
+              },
+            });
+
             readData({
               link: "leaderboard",
               successCallback: (snapshot) => {
@@ -253,7 +266,10 @@ const PokemonDetailScreen = ({ navigation, route }) => {
                       link: "leaderboard",
                       data: {
                         uid: user.uid,
-                        name: user?.displayName || userDetails?.name||  user.email.split("@")[0],
+                        name:
+                          user?.displayName ||
+                          userDetails?.name ||
+                          user.email.split("@")[0],
                         lastPokemonId: details.id,
                         totalPokemons: newPokemonLength,
                         time: new Date().getTime(),
@@ -337,7 +353,9 @@ const PokemonDetailScreen = ({ navigation, route }) => {
               Not Enough Energy
             </Button>
           )}
-          {viewOnly ? <Badge style={styles.captureBadge}>Captured</Badge> : null}
+          {viewOnly ? (
+            <Badge style={styles.captureBadge}>Captured</Badge>
+          ) : null}
 
           <TabView
             style={viewOnly ? { marginTop: 20 } : null}
@@ -441,9 +459,9 @@ export default PokemonDetailScreen;
 
 const styles = StyleSheet.create({
   captureBadge: {
-    backgroundColor: '#1BC5BD',
+    backgroundColor: "#1BC5BD",
     paddingHorizontal: 5,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   modalContainer: {
     flex: 1,

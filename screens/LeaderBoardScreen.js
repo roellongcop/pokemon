@@ -5,6 +5,7 @@ import { firebaseSubscribe } from "../firebaseConfig";
 import PokemonImage from "../components/PokemonImage";
 import { timeAgo } from "../lib/date";
 import { Badge } from "react-native-paper";
+import { checkEnergy } from "../lib/user";
 
 const LeaderBoardScreen = () => {
   const [leaderboards, setLeaderboards] = useState([]);
