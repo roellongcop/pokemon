@@ -20,7 +20,7 @@ import LastPokemonImage from "../components/LastPokemonImage";
 
 const HomeScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.USER);
+  const { user, pokemons } = useSelector((state) => state.USER);
   const { lastPokemonId, name, time, totalPokemons, uid } = useSelector(
     (state) => state.LEADERBOARD
   );
@@ -155,7 +155,7 @@ const HomeScreen = ({ navigation, route }) => {
                 navigation.navigate("Dashboard", { screen: "MyAccount" });
               }}
             >
-              <LastPokemonImage />
+              <LastPokemonImage pokemons={pokemons} />
             </TouchableOpacity>
           </View>
           <View style={styles.contentContainer}>
@@ -235,7 +235,7 @@ const HomeScreen = ({ navigation, route }) => {
                 View All
               </Button>
             </View>
-            <View style={styles.pokemonContainer}>
+            <View style={[styles.pokemonContainer, { paddingBottom: 20 }]}>
               {wildPokemons.map((pokemon, index) => (
                 <TouchableOpacity
                   key={index}
@@ -270,11 +270,12 @@ const HomeScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   headerContainer: {
     marginTop: 30,
-    display: 'flex',
-    flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row",
     justifyContent: "space-between",
-    alignContent: 'center',
-    alignItems: 'center',
+    alignContent: "center",
+    alignItems: "center",
+    paddingRight: 10,
   },
   flexContainer: {
     display: "flex",
