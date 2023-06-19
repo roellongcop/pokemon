@@ -296,7 +296,7 @@ const PokemonDetailScreen = ({ navigation, route }) => {
           },
         });
       }
-    }, 4000);
+    }, 3000);
   };
 
   const capturePercentage = () => {
