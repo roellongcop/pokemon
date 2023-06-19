@@ -6,16 +6,16 @@ import {
   StyleSheet,
   TouchableOpacity,
   RefreshControl,
+  ActivityIndicator,
+  ImageBackground,
+  ScrollView
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { StatusBar } from "expo-status-bar";
 import { firebaseOff, firebaseSubscribe, readData } from "../firebaseConfig";
 import PokemonImage from "../components/PokemonImage";
 import { Button, IconButton } from "react-native-paper";
-import { ImageBackground } from "react-native";
 import { apiGet, apiUrl } from "../lib/api";
-import { ScrollView } from "react-native-gesture-handler";
-import { ActivityIndicator } from "react-native";
 
 const HomeScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();

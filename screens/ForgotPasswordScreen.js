@@ -3,8 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  Alert,
-  StatusBar,
   Image,
   SafeAreaView,
   ScrollView,

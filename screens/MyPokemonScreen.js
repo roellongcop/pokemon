@@ -1,21 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Text,
-  View,
-  SafeAreaView,
-  FlatList,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
-import { apiGet, apiUrl } from "../lib/api";
+import { Text, View, SafeAreaView, FlatList, StyleSheet } from "react-native";
+import { apiUrl } from "../lib/api";
 import Pokemon from "../components/Pokemon";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  Button,
-  IconButton,
-  Searchbar,
-  SegmentedButtons,
-} from "react-native-paper";
+import { useSelector } from "react-redux";
+import { IconButton, Searchbar } from "react-native-paper";
 import { checkEnergy } from "../lib/user";
 
 const MyPokemonScreen = ({ navigation, route }) => {

@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  StatusBar,
   RefreshControl,
   ScrollView,
   SafeAreaView,

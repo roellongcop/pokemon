@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   FlatList,
   StyleSheet,
-  ScrollView,
 } from "react-native";
 import { apiGet, apiUrl } from "../lib/api";
 import Pokemon from "../components/Pokemon";
@@ -14,7 +13,6 @@ import {
   Button,
   IconButton,
   Searchbar,
-  SegmentedButtons,
 } from "react-native-paper";
 import { checkEnergy } from "../lib/user";
 
