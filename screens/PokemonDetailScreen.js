@@ -14,7 +14,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { Button, Chip, IconButton } from "react-native-paper";
+import { Badge, Button, Chip, IconButton } from "react-native-paper";
 import { apiGet } from "../lib/api";
 import { checkEnergy } from "../lib/user";
 import { pushData, readData, setData } from "../firebaseConfig";
@@ -253,6 +253,8 @@ const PokemonDetailScreen = ({ navigation, route }) => {
                       link: "leaderboard",
                       data: {
                         uid: user.uid,
+                        name: user.displayName || user.email.split("@")[0],
+                        lastPokemonId: details.id,
                         totalPokemons: newPokemonLength,
                         time: new Date().getTime(),
                       },
@@ -335,6 +337,8 @@ const PokemonDetailScreen = ({ navigation, route }) => {
               Not Enough Energy
             </Button>
           )}
+          {viewOnly ? <Badge style={styles.captureBadge}>Captured</Badge> : null}
+
           <TabView
             style={viewOnly ? { marginTop: 20 } : null}
             lazy
@@ -436,6 +440,11 @@ const PokemonDetailScreen = ({ navigation, route }) => {
 export default PokemonDetailScreen;
 
 const styles = StyleSheet.create({
+  captureBadge: {
+    backgroundColor: '#1BC5BD',
+    paddingHorizontal: 5,
+    fontWeight: 'bold'
+  },
   modalContainer: {
     flex: 1,
     justifyContent: "center",

@@ -72,9 +72,11 @@ const SignUpScreen = ({ navigation }) => {
             if (snapshot && snapshot.val()) {
             } else {
               setData({
-                link: 'leaderboard',
+                link: "leaderboard",
                 data: {
                   uid: user.uid,
+                  name: user.displayName || user.email.split("@")[0],
+                  lastPokemonId: 3,
                   totalPokemons: 3,
                   time: new Date().getTime(),
                 },
