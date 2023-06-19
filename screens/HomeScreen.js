@@ -4,11 +4,12 @@ import {
   View,
   SafeAreaView,
   StyleSheet,
-  TouchableOpacity,
+  TouchableHighlight,
   RefreshControl,
   ActivityIndicator,
   ImageBackground,
   ScrollView,
+  TouchableOpacity
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { StatusBar } from "expo-status-bar";
@@ -163,22 +164,33 @@ const HomeScreen = ({ navigation, route }) => {
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.label}>Top Catcher!</Text>
-            <View style={styles.topCatcherContainer}>
-              <View style={styles.image}>
-                <PokemonImage
-                  pokemonId={lastPokemonId}
-                  width={80}
-                  height={80}
-                />
-              </View>
+            <TouchableHighlight
+              style={styles.touchable}
+              activeOpacity={0.5}
+              underlayColor="#DDDDDD"
+              onPress={() => {
+                navigation.navigate("PokemonCatchers", {
+                  screen: "LeaderBoard",
+                });
+              }}
+            >
+              <View style={styles.topCatcherContainer}>
+                <View style={styles.image}>
+                  <PokemonImage
+                    pokemonId={lastPokemonId}
+                    width={80}
+                    height={80}
+                  />
+                </View>
 
-              <View>
-                <Text style={styles.name}>{name}</Text>
-                <Text style={styles.total}>
-                  Pokemons: {totalPokemons.toLocaleString()}
-                </Text>
+                <View>
+                  <Text style={styles.name}>{name}</Text>
+                  <Text style={styles.total}>
+                    Pokemons: {totalPokemons.toLocaleString()}
+                  </Text>
+                </View>
               </View>
-            </View>
+            </TouchableHighlight>
           </View>
         </ImageBackground>
 
@@ -201,7 +213,10 @@ const HomeScreen = ({ navigation, route }) => {
                 <ActivityIndicator size="small" color="#0000ff" />
               ) : (
                 myPokemons.map((pokemon, index) => (
-                  <TouchableOpacity
+                  <TouchableHighlight
+                    style={styles.touchable}
+                    activeOpacity={0.5}
+                    underlayColor="#DDDDDD"
                     key={index}
                     onPress={() => {
                       navigation.navigate("PokemonDetail", {
@@ -219,7 +234,7 @@ const HomeScreen = ({ navigation, route }) => {
                       />
                       <Text style={styles.pokemonName}>{pokemon.name}</Text>
                     </View>
-                  </TouchableOpacity>
+                  </TouchableHighlight>
                 ))
               )}
             </View>
@@ -243,7 +258,10 @@ const HomeScreen = ({ navigation, route }) => {
                 <ActivityIndicator size="small" color="#0000ff" />
               ) : (
                 wildPokemons.map((pokemon, index) => (
-                  <TouchableOpacity
+                  <TouchableHighlight
+                    style={styles.touchable}
+                    activeOpacity={0.5}
+                    underlayColor="#DDDDDD"
                     key={index}
                     onPress={() => {
                       navigation.navigate("PokemonDetail", {
@@ -263,7 +281,7 @@ const HomeScreen = ({ navigation, route }) => {
                         {pokemon.details.name}
                       </Text>
                     </View>
-                  </TouchableOpacity>
+                  </TouchableHighlight>
                 ))
               )}
             </View>
@@ -275,6 +293,9 @@ const HomeScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
+  touchable: {
+    borderRadius: 10,
+  },
   headerContainer: {
     marginTop: 30,
     display: "flex",
