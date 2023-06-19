@@ -41,35 +41,9 @@ cd pokemon-catcher
 npm install or yarn install
 ```
 
-###### Set up Firebase:
-Create a new project on the Firebase console.
-Enable the Authentication service and set up the necessary authentication methods.
-Enable the Realtime Database service.
-Retrieve the Firebase configuration details.
-
-###### Set up PokeAPI:
-Obtain an API key from the PokeAPI website.
-Copy the API key for future use.
-
-###### Configure the app:
-Create a new file named .env in the project's root directory.
-Add the following configuration details to the .env file:
-
-```sh
-FIREBASE_API_KEY=[your Firebase API key]
-FIREBASE_AUTH_DOMAIN=[your Firebase auth domain]
-FIREBASE_DATABASE_URL=[your Firebase database URL]
-FIREBASE_PROJECT_ID=[your Firebase project ID]
-FIREBASE_STORAGE_BUCKET=[your Firebase storage bucket]
-FIREBASE_MESSAGING_SENDER_ID=[your Firebase messaging sender ID]
-FIREBASE_APP_ID=[your Firebase app ID]
-POKEMON_API_BASE_URL=https://pokeapi.co/api/v2/
-POKEMON_API_KEY=[your PokeAPI key]
-```
-
 Start the app: 
 ```sh
-npm start or yarn start
+npx expo start
 ```
 
 ## Screenshots
