@@ -28,7 +28,7 @@ Pokemon Catcher is a simple mobile app that allows users to create an account an
 ## Getting Started
 To run the Pokemon Catcher app locally, follow these steps:
 
-Clone the repository: git clone [repository URL]
+Clone the repository: git clone https://github.com/roellongcop/pokemon
 
 Navigate to the project directory: cd pokemon-catcher
 
