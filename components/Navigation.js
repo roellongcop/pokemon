@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Alert, Image, StyleSheet } from "react-native";
+import { Alert, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { readData } from "../firebaseConfig";
 import {
   getAuth,
@@ -22,7 +22,7 @@ import LastPokemonImage from "./LastPokemonImage";
 import PokemonDetailScreen from "../screens/PokemonDetailScreen";
 import MyPokemonScreen from "../screens/MyPokemonScreen";
 import LeaderBoardScreen from "../screens/LeaderBoardScreen";
-
+import MyAccountScreen from "../screens/MyAccountScreen";
 import { IconButton } from "react-native-paper";
 
 const Drawer = createDrawerNavigator();
@@ -40,14 +40,34 @@ const AuthStackScreen = () => {
   );
 };
 
-
 const LeaderboardStackScreen = ({ navigation }) => {
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="LeaderBoard"
         component={LeaderBoardScreen}
-        options={{ headerShown: false }}
+        options={{
+          headerTitleAlign: "center",
+          title: "Leader Board",
+          headerShown: true,
+          headerLeft: () => (
+            <IconButton
+              icon="menu"
+              onPress={() => {
+                navigation.toggleDrawer();
+              }}
+            />
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Dashboard", { screen: "MyAccount" });
+              }}
+            >
+              <LastPokemonImage />
+            </TouchableOpacity>
+          ),
+        }}
       />
     </Stack.Navigator>
   );
@@ -72,6 +92,8 @@ const DashboardStackScreen = ({ navigation }) => {
               : "Pokemon Details",
         })}
       />
+
+      <Stack.Screen name="MyAccount" component={MyAccountScreen} />
     </Stack.Navigator>
   );
 };
@@ -94,7 +116,15 @@ const MyPokemonStackScreen = ({ navigation }) => {
               }}
             />
           ),
-          headerRight: () => <LastPokemonImage />,
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Dashboard", { screen: "MyAccount" });
+              }}
+            >
+              <LastPokemonImage />
+            </TouchableOpacity>
+          ),
         }}
       />
       <Stack.Screen
@@ -130,7 +160,15 @@ const PokemonStackScreen = ({ navigation }) => {
               }}
             />
           ),
-          headerRight: () => <LastPokemonImage />,
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Dashboard", { screen: "MyAccount" });
+              }}
+            >
+              <LastPokemonImage />
+            </TouchableOpacity>
+          ),
         }}
       />
       <Stack.Screen
@@ -226,12 +264,7 @@ const Navigation = () => {
             drawerActiveTintColor: "#fff",
             drawerInactiveTintColor: "#555",
             headerTitleAlign: "center",
-            headerRight: () => (
-              <LastPokemonImage
-                style={{ marginRight: 10 }}
-                pokemons={pokemons}
-              />
-            ),
+           
           }}
         >
           <Drawer.Screen
@@ -265,6 +298,7 @@ const Navigation = () => {
             name="PokemonCatchers"
             component={LeaderboardStackScreen}
             options={{
+              headerShown: false,
               title: "Leader Board",
               drawerIcon: ({ color }) => (
                 <Image
@@ -278,6 +312,7 @@ const Navigation = () => {
             name="MyPokemons"
             component={MyPokemonStackScreen}
             options={({ route }) => ({
+              title: "My Pokemons",
               headerShadowVisible: false,
               headerShown: false,
               drawerIcon: ({ color }) => (

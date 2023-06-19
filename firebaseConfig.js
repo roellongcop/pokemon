@@ -12,7 +12,7 @@ import {
   remove,
   update
 } from "firebase/database";
-import { getAuth } from "firebase/auth";
+import { getAuth, updateProfile } from "firebase/auth";
 // Optionally import the services that you want to use
 // import {...} from "firebase/auth";
 // import {...} from "firebase/database";
@@ -131,4 +131,5 @@ export {
   readData,
   updateData,
   firebaseConfig,
+  updateProfile
 };

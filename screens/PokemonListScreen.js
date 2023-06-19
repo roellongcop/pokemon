@@ -80,9 +80,9 @@ const PokemonListScreen = ({ navigation, route }) => {
   };
 
   const handleRefresh = () => {
+    setRefreshing(true);
     checkEnergy(user);
 
-    setRefreshing(true);
     loadPokemons(() => {
       setRefreshing(false);
     });

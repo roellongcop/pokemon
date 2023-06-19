@@ -55,15 +55,10 @@ const SignUpScreen = ({ navigation }) => {
     });
   };
 
-  const addUserDetails = (user) => {
+  const addUserDetails = (user, details) => {
     setData({
       link: `users/${user.uid}/details`,
-      data: {
-        uid: user.uid,
-        name: user.displayName || user.email.split("@")[0],
-        lastPokemonId: 3,
-        totalPokemons: 3,
-      },
+      data: details,
     });
   };
 
@@ -77,6 +72,13 @@ const SignUpScreen = ({ navigation }) => {
           time: new Date().getTime(),
         };
 
+        const details = {
+          uid: user.uid,
+          name: user.displayName || user.email.split("@")[0],
+          lastPokemonId: 3,
+          totalPokemons: 3,
+        }
+
         dispatch({ type: "user/setUser", payload: user });
         dispatch({
           type: "user/setPokemons",
@@ -88,9 +90,14 @@ const SignUpScreen = ({ navigation }) => {
           payload: energy,
         });
 
+        dispatch({
+          type: "user/setDetails",
+          payload: details,
+        });
+
         addStartPokemon(user);
         addStartEnery(user, energy);
-        addUserDetails(user);
+        addUserDetails(user, details);
 
         readData({
           link: "leaderboard",

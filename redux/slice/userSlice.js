@@ -8,6 +8,7 @@ const slice = createSlice({
       chance: 0,
       time: new Date().getTime()
     },
+    details: null
   },
   reducers: {
     
@@ -20,7 +21,11 @@ const slice = createSlice({
 
     setEnergy: (state, action) => {
       state.energy = action.payload;
+    },
+    setDetails: (state, action) => {
+      state.details = action.payload;
     }
+    
   },
 });
 export default slice.reducer;

@@ -8,7 +8,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   ImageBackground,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { StatusBar } from "expo-status-bar";
@@ -16,6 +16,7 @@ import { firebaseOff, firebaseSubscribe, readData } from "../firebaseConfig";
 import PokemonImage from "../components/PokemonImage";
 import { Button, IconButton } from "react-native-paper";
 import { apiGet, apiUrl } from "../lib/api";
+import LastPokemonImage from "../components/LastPokemonImage";
 
 const HomeScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -142,13 +143,21 @@ const HomeScreen = ({ navigation, route }) => {
           resizeMode="cover"
           style={styles.background}
         >
-          <IconButton
-            style={styles.menu}
-            icon="menu"
-            onPress={() => {
-              navigation.toggleDrawer();
-            }}
-          />
+          <View style={styles.headerContainer}>
+            <IconButton
+              icon="menu"
+              onPress={() => {
+                navigation.toggleDrawer();
+              }}
+            />
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Dashboard", { screen: "MyAccount" });
+              }}
+            >
+              <LastPokemonImage />
+            </TouchableOpacity>
+          </View>
           <View style={styles.contentContainer}>
             <Text style={styles.label}>Top Catcher!</Text>
             <View style={styles.topCatcherContainer}>
@@ -259,6 +268,14 @@ const HomeScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    marginTop: 30,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: "space-between",
+    alignContent: 'center',
+    alignItems: 'center',
+  },
   flexContainer: {
     display: "flex",
     justifyContent: "space-between",

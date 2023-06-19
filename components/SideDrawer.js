@@ -15,11 +15,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "firebase/auth";
 import { removeData } from "../lib/storage";
 import { auth, firebaseSubscribe, setData } from "../firebaseConfig";
+import { useNavigation } from "@react-navigation/native";
 
 const SideDrawer = (props) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
-  const { user, pokemons, energy } = useSelector((state) => state.USER);
+  const { user, pokemons, energy, details } = useSelector(
+    (state) => state.USER
+  );
 
   const handleSignout = () => {
     signOut(auth)
@@ -36,7 +40,7 @@ const SideDrawer = (props) => {
   useEffect(() => {
     firebaseSubscribe(`users/${user.uid}`, (snapshot) => {
       if (snapshot && snapshot.val()) {
-        const { pokemon, energy } = snapshot.val();
+        const { pokemon, energy, details } = snapshot.val();
         dispatch({
           type: "user/setPokemons",
           payload: pokemon ? Object.values(pokemon) : [],
@@ -46,12 +50,16 @@ const SideDrawer = (props) => {
           type: "user/setEnergy",
           payload: energy,
         });
+
+        dispatch({
+          type: "user/setDetails",
+          payload: details,
+        });
       }
     });
   }, []);
 
   const stars = () => {
-
     if (!energy) {
       return;
     }
@@ -79,7 +87,9 @@ const SideDrawer = (props) => {
         >
           <View style={styles.profileContainer}>
             <View>
-              <Text style={styles.name}>{user?.email}</Text>
+              <Text style={styles.name}>
+                {user?.displayName || details?.name || user?.email}
+              </Text>
               <View style={styles.subTextContainer}>
                 <Text style={styles.subText}>
                   {pokemons?.length || 0} Owned Pokemons
@@ -88,9 +98,7 @@ const SideDrawer = (props) => {
             </View>
             <View>
               <Text style={styles.chance}>ENERGY</Text>
-              <View style={styles.starContainer}>
-                {stars()}
-              </View>
+              <View style={styles.starContainer}>{stars()}</View>
             </View>
           </View>
         </ImageBackground>
@@ -99,7 +107,12 @@ const SideDrawer = (props) => {
         </View>
       </DrawerContentScrollView>
       <View style={styles.bottomMenuContainer}>
-        <TouchableOpacity onPress={() => {}} style={styles.bottomMenuTouchable}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Dashboard", { screen: "MyAccount" });
+          }}
+          style={styles.bottomMenuTouchable}
+        >
           <View style={styles.bottomTextContainer}>
             <Ionicons name="shield-outline" size={22} />
             <Text style={styles.bottomText}>My Account</Text>

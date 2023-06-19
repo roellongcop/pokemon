@@ -23,7 +23,7 @@ import { StatusBar } from "expo-status-bar";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const PokemonDetailScreen = ({ navigation, route }) => {
-  const { user, energy, pokemons } = useSelector((state) => state.USER);
+  const { user, energy, pokemons, details: userDetails } = useSelector((state) => state.USER);
   const { pokemon, viewOnly } = route.params;
   const { details } = pokemon;
   const type = details.types[0].type.name;
@@ -38,8 +38,8 @@ const PokemonDetailScreen = ({ navigation, route }) => {
   const [captureFailed, setCaptureFailed] = useState(false);
 
   const handleRefresh = () => {
-    checkEnergy(user);
     setRefreshing(true);
+    checkEnergy(user);
     updateImageSource();
     setIndex(0);
     setRefreshing(false);
@@ -253,7 +253,7 @@ const PokemonDetailScreen = ({ navigation, route }) => {
                       link: "leaderboard",
                       data: {
                         uid: user.uid,
-                        name: user.displayName || user.email.split("@")[0],
+                        name: user?.displayName || userDetails?.name||  user.email.split("@")[0],
                         lastPokemonId: details.id,
                         totalPokemons: newPokemonLength,
                         time: new Date().getTime(),
