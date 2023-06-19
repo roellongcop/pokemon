@@ -24,8 +24,6 @@ Pokemon Catcher is a simple mobile app that allows users to create an account an
     - User Authentication: Firebase's authentication service is used for user registration, login, and password reset.
     - Real-time Database: Firebase's real-time database is utilized to store and manage user data.
 
-And of course Dillinger itself is open source with a [public repository][dill]
- on GitHub.
 
 ## Getting Started
 To run the Pokemon Catcher app locally, follow these steps:
