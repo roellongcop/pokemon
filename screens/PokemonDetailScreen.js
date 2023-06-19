@@ -253,6 +253,11 @@ const PokemonDetailScreen = ({ navigation, route }) => {
               data: {
                 lastPokemonId: details.id,
                 totalPokemons: newPokemonLength,
+                uid: user?.uid,
+                name:
+                  user?.displayName ||
+                  userDetails?.name ||
+                  user.email.split("@")[0],
               },
             });
 
@@ -265,7 +270,7 @@ const PokemonDetailScreen = ({ navigation, route }) => {
                     setData({
                       link: "leaderboard",
                       data: {
-                        uid: user.uid,
+                        uid: user?.uid,
                         name:
                           user?.displayName ||
                           userDetails?.name ||
