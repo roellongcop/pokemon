@@ -239,29 +239,33 @@ const HomeScreen = ({ navigation, route }) => {
               </Button>
             </View>
             <View style={[styles.pokemonContainer, { paddingBottom: 20 }]}>
-              {wildPokemons.map((pokemon, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => {
-                    navigation.navigate("PokemonDetail", {
-                      customTitle: pokemon.name,
-                      pokemon,
-                      viewOnly: false,
-                    });
-                  }}
-                >
-                  <View style={styles.singleWildPokemon}>
-                    <PokemonImage
-                      pokemonId={pokemon.details.id}
-                      width={80}
-                      height={80}
-                    />
-                    <Text style={styles.pokemonName}>
-                      {pokemon.details.name}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
+              {!wildPokemons.length ? (
+                <ActivityIndicator size="small" color="#0000ff" />
+              ) : (
+                wildPokemons.map((pokemon, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => {
+                      navigation.navigate("PokemonDetail", {
+                        customTitle: pokemon.name,
+                        pokemon,
+                        viewOnly: false,
+                      });
+                    }}
+                  >
+                    <View style={styles.singleWildPokemon}>
+                      <PokemonImage
+                        pokemonId={pokemon.details.id}
+                        width={80}
+                        height={80}
+                      />
+                      <Text style={styles.pokemonName}>
+                        {pokemon.details.name}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))
+              )}
             </View>
           </View>
         </View>
