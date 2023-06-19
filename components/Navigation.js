@@ -39,10 +39,14 @@ const AuthStackScreen = () => {
   );
 };
 
-const DashboardStackScreen = () => {
+const DashboardStackScreen = ({ navigation }) => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Home" component={HomeScreen} />
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };
@@ -209,7 +213,7 @@ const Navigation = () => {
             name="Dashboard"
             component={DashboardStackScreen}
             options={{
-              // headerShown: false,
+              headerShown: false,
               drawerIcon: ({ color }) => (
                 <Image
                   style={styles.drawerIcon}

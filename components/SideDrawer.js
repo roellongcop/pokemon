@@ -15,11 +15,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "firebase/auth";
 import { removeData } from "../lib/storage";
 import { auth, firebaseSubscribe, setData } from "../firebaseConfig";
+import { startAfter } from "firebase/database";
 
 const SideDrawer = (props) => {
   const dispatch = useDispatch();
 
-  const { user, pokemons } = useSelector((state) => state.USER);
+  const { user, pokemons, energy } = useSelector((state) => state.USER);
 
   const handleSignout = () => {
     signOut(auth)
@@ -50,6 +51,20 @@ const SideDrawer = (props) => {
     });
   }, []);
 
+  const stars = () => {
+    let stars = [];
+    for (let index = 0; index < energy.chance; index++) {
+      stars.push(<Ionicons key={index} name="star" size={22} color="yellow" />);
+    }
+
+    for (let index = 3; index > energy.chance; index--) {
+      stars.push(<Ionicons key={index} name="star" size={22} color="white" />);
+    }
+
+
+    return stars;
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView
@@ -61,11 +76,19 @@ const SideDrawer = (props) => {
           resizeMode="cover"
         >
           <View style={styles.profileContainer}>
-            <Text style={styles.name}>{user?.email}</Text>
-            <View style={styles.subTextContainer}>
-              <Text style={styles.subText}>
-                {pokemons?.length || 0} Owned Pokemons
-              </Text>
+            <View>
+              <Text style={styles.name}>{user?.email}</Text>
+              <View style={styles.subTextContainer}>
+                <Text style={styles.subText}>
+                  {pokemons?.length || 0} Owned Pokemons
+                </Text>
+              </View>
+            </View>
+            <View>
+              <Text style={styles.chance}>ENERGY</Text>
+              <View style={styles.starContainer}>
+                {stars()}
+              </View>
             </View>
           </View>
         </ImageBackground>
@@ -123,14 +146,29 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   profileContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     marginTop: 120,
     padding: 20,
+    alignContent: "center",
+    alignItems: "center",
   },
   name: {
     color: "#fff",
     fontSize: 18,
     marginBottom: 5,
+    fontWeight: "bold",
+  },
+  starContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  chance: {
+    textAlign: "center",
+    color: "#fff",
     fontWeight: "bold",
   },
 });

@@ -39,17 +39,6 @@ const MyPokemonScreen = ({ navigation, route }) => {
     return json;
   };
 
-  const addPokemonDetail = async (pokemons) => {
-    for (const key in pokemons) {
-      if (Object.hasOwnProperty.call(pokemons, key)) {
-        const pokemon = pokemons[key];
-        pokemons[key]["details"] = await getPokemonDetails(pokemon.url);
-      }
-    }
-
-    return pokemons;
-  };
-
   const loadPokemons = async (callback = () => {}) => {
     let result = [];
 
@@ -116,7 +105,9 @@ const MyPokemonScreen = ({ navigation, route }) => {
         />
       </View>
 
-      <Text style={{ marginLeft: 10 }}>Showing {filteredPokemons.length} of {myPokemons.length} records</Text>
+      <Text style={{ marginLeft: 10 }}>
+        Showing {filteredPokemons.length} of {myPokemons.length} records
+      </Text>
       <FlatList
         ref={flatListRef}
         refreshing={refreshing}

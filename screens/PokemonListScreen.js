@@ -247,7 +247,7 @@ const PokemonListScreen = ({ navigation, route }) => {
         numColumns={2}
         contentContainerStyle={styles.contentContainer}
         renderItem={({ item, index }) => (
-          <Pokemon pokemon={item} index={index} skeleton={refreshing} />
+          <Pokemon pokemon={item} index={index} />
         )}
         keyExtractor={(item, index) => index.toString()}
         ListFooterComponent={renderFooter}
