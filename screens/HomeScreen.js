@@ -3,13 +3,14 @@ import { Text, View, SafeAreaView, StyleSheet } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { StatusBar } from "expo-status-bar";
-import { firebaseSubscribe } from "../firebaseConfig";
+import { firebaseSubscribe, readData } from "../firebaseConfig";
 import PokemonImage from "../components/PokemonImage";
-import { IconButton } from "react-native-paper";
+import { Button, IconButton } from "react-native-paper";
 import { ImageBackground } from "react-native";
 import { apiGet, apiUrl } from "../lib/api";
 import Pokemon from "../components/Pokemon";
 import { ScrollView } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native";
 
 const HomeScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -25,17 +26,31 @@ const HomeScreen = ({ navigation, route }) => {
   const populateMyPokemons = async () => {
     let result = [];
 
-    for (let i = pokemons.length - 3; i < pokemons.length; i++) {
-      const pokemonId = pokemons[i];
+    try {
+      for (let i = pokemons.length - 3; i < pokemons.length; i++) {
+        const pokemonId = pokemons[i];
 
-      const details = await getPokemonDetails(`${apiUrl}pokemon/${pokemonId}`);
-      result.push({
-        name: details.name,
-        id: details.id,
-      });
+          try {
+            const details = await getPokemonDetails(
+              `${apiUrl}pokemon/${pokemonId}`
+            );
+            result.push({
+              name: details.name,
+              id: details.id,
+              details,
+            });
+          } catch (error) {
+            console.error(
+              `Error fetching details for Pokemon with ID ${pokemonId}:`,
+              error
+            );
+          }
+      }
+
+      setMyPokemons(result);
+    } catch (error) {
+      console.error("Error populating my Pokemons:", error);
     }
-
-    setMyPokemons(result);
   };
 
   const getPokemonDetails = async (url) => {
@@ -78,8 +93,22 @@ const HomeScreen = ({ navigation, route }) => {
   };
 
   useEffect(() => {
+    readData({
+      link: `users/${user.uid}/pokemon`,
+      successCallback: (snapshot) => {
+        if (snapshot) {
+          const pokemon = snapshot.val() || [];
+          dispatch({
+            type: "user/setPokemons",
+            payload: pokemon ? Object.values(pokemon) : [],
+          });
+
+          populateMyPokemons();
+        }
+      },
+    });
+
     loadPokemons();
-    populateMyPokemons();
 
     firebaseSubscribe("leaderboard", (snapshot) => {
       if (snapshot) {
@@ -127,34 +156,79 @@ const HomeScreen = ({ navigation, route }) => {
 
         <View style={styles.contentContainer}>
           <View style={styles.categoryContainer}>
-            <Text style={styles.subLabel}>My Recent Pokemons</Text>
+            <View style={styles.flexContainer}>
+              <Text style={styles.subLabel}>My Recent Pokemons</Text>
+              <Button
+                onPress={() => {
+                  navigation.navigate("MyPokemons", {
+                    screen: "MyPokemon",
+                  });
+                }}
+              >
+                View All
+              </Button>
+            </View>
             <View style={styles.pokemonContainer}>
               {myPokemons.map((pokemon, index) => (
-                <View key={index} style={styles.myPokemon}>
-                  <PokemonImage
-                    pokemonId={pokemon.id}
-                    width={100}
-                    height={100}
-                  />
-                  <Text style={styles.pokemonName}>{pokemon.name}</Text>
-                </View>
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    navigation.navigate("PokemonDetail", {
+                      customTitle: pokemon.name,
+                      pokemon,
+                      viewOnly: true,
+                    });
+                  }}
+                >
+                  <View style={styles.myPokemon}>
+                    <PokemonImage
+                      pokemonId={pokemon.id}
+                      width={100}
+                      height={100}
+                    />
+                    <Text style={styles.pokemonName}>{pokemon.name}</Text>
+                  </View>
+                </TouchableOpacity>
               ))}
             </View>
           </View>
 
           <View style={styles.categoryContainer}>
-            <Text style={styles.subLabel}>Wild Pokemons</Text>
+            <View style={styles.flexContainer}>
+              <Text style={styles.subLabel}>Wild Pokemons</Text>
+              <Button
+                onPress={() => {
+                  navigation.navigate("Pokemons", {
+                    screen: "PokemonList",
+                  });
+                }}
+              >
+                View All
+              </Button>
+            </View>
             <View style={styles.pokemonContainer}>
               {wildPokemons.map((pokemon, index) => (
-                <View style={styles.singleWildPokemon}>
-                  <PokemonImage
-                    pokemonId={pokemon.details.id}
-                    width={80}
-                    height={80}
-                  />
-                  <Text style={styles.pokemonName}>{pokemon.details.name}</Text>
-                </View>
-                // <Pokemon key={index} pokemon={pokemon} index={index} />
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    navigation.navigate("PokemonDetail", {
+                      customTitle: pokemon.name,
+                      pokemon,
+                      viewOnly: false,
+                    });
+                  }}
+                >
+                  <View style={styles.singleWildPokemon}>
+                    <PokemonImage
+                      pokemonId={pokemon.details.id}
+                      width={80}
+                      height={80}
+                    />
+                    <Text style={styles.pokemonName}>
+                      {pokemon.details.name}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               ))}
             </View>
           </View>
@@ -165,20 +239,27 @@ const HomeScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
+  flexContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+  },
   singleWildPokemon: {
-    elevation: 3,
+    elevation: 2,
     backgroundColor: "#fff",
-    padding: 5,
+    paddingHorizontal: 8,
     paddingVertical: 5,
     borderRadius: 5,
-    marginVertical: 3
+    marginVertical: 3,
   },
   pokemonName: {
     textAlign: "center",
     marginTop: 5,
+    textTransform: "capitalize",
   },
   myPokemon: {
-    elevation: 3,
+    elevation: 2,
     backgroundColor: "#fff",
     borderRadius: 5,
     padding: 5,
@@ -215,7 +296,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     paddingHorizontal: 10,
-    elevation: 3,
+    elevation: 2,
   },
   contentContainer: {
     marginHorizontal: 10,

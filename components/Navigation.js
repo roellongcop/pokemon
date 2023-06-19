@@ -47,6 +47,17 @@ const DashboardStackScreen = ({ navigation }) => {
         component={HomeScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="PokemonDetail"
+        component={PokemonDetailScreen}
+        options={({ route }) => ({
+          headerShown: false,
+          title:
+            route.params && route.params.customTitle
+              ? route.params.customTitle
+              : "Pokemon Details",
+        })}
+      />
     </Stack.Navigator>
   );
 };
