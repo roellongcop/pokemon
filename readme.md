@@ -1,6 +1,12 @@
 # Pokemon Catcher
 Pokemon Catcher is a simple mobile app that allows users to create an account and collect their own Pokemon. Upon registration, users will receive three starter Pokemon, and they can capture more by searching and catching Pokemon in the game. Users have three chances to catch Pokemon, which reset automatically every 5 minutes. The app also displays the current user with the highest number of Pokemon in their account.
 
+
+## Working App
+#### Expo-Go
+https://expo.dev/@longcoproel/pokemon-catcher?serviceType=classic&distribution=expo-go
+
+
 ## Features
 - Sign Up: Users can create an account by providing their information.
 - Sign In: Registered users can log in to their accounts.
