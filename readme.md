@@ -74,41 +74,41 @@ npm start or yarn start
 
 ## Screenshots
 ##### AuthScreen 
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/AuthScreen.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/AuthScreen.jpg?raw=true =250x)
 ##### SignUpScreen
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/SignUpScreen.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/SignUpScreen.jpg?raw=true =250x)
 ##### ForgotPasswordScreen
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/ForgotPasswordScreen.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/ForgotPasswordScreen.jpg?raw=true =250x)
 ##### HomeScreen
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/HomeScreen.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/HomeScreen.jpg?raw=true =250x)
 ##### LeaderBoardScreen
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/LeaderBoardScreen.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/LeaderBoardScreen.jpg?raw=true =250x)
 ##### MyAccountScreen
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/MyAccountScreen.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/MyAccountScreen.jpg?raw=true =250x)
 ##### MyPokemonScreen
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/MyPokemonScreen.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/MyPokemonScreen.jpg?raw=true =250x)
 ##### PokemonDetailScreen-Abilities
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Abilities.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Abilities.jpg?raw=true =250x)
 ##### PokemonDetailScreen-Capture-Loading
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Capture-Loading.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Capture-Loading.jpg?raw=true =250x)
 ##### PokemonDetailScreen-Captured-Failed
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Captured-Failed.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Captured-Failed.jpg?raw=true =250x)
 ##### PokemonDetailScreen-Captured-Success
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Captured-Success.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Captured-Success.jpg?raw=true =250x)
 ##### PokemonDetailScreen-Captured
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Captured.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Captured.jpg?raw=true =250x)
 ##### PokemonDetailScreen-Items
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Items.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Items.jpg?raw=true =250x)
 ##### PokemonDetailScreen-Moves
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Moves.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Moves.jpg?raw=true =250x)
 ##### PokemonDetailScreen-Stats
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Stats.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonDetailScreen-Stats.jpg?raw=true =250x)
 ##### PokemonListScreen
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonListScreen.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/PokemonListScreen.jpg?raw=true =250x)
 ##### SideDrawer
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/SideDrawer.jpg?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/screenshots/SideDrawer.jpg?raw=true =250x)
 ##### SplashScreen
-![Alt text](https://github.com/roellongcop/pokemon/blob/main/assets/splash.png?raw=true)
+![Alt text](https://github.com/roellongcop/pokemon/blob/main/assets/splash.png?raw=true =250x)
 
 
 
