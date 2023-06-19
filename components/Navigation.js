@@ -9,7 +9,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { getData } from "../lib/storage";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import SideDrawer from "./SideDrawer";
 import HomeScreen from "../screens/HomeScreen";
@@ -24,6 +24,7 @@ import MyPokemonScreen from "../screens/MyPokemonScreen";
 import LeaderBoardScreen from "../screens/LeaderBoardScreen";
 import MyAccountScreen from "../screens/MyAccountScreen";
 import { IconButton } from "react-native-paper";
+import { checkEnergy } from "../lib/user";
 
 const Drawer = createDrawerNavigator();
 
@@ -188,7 +189,6 @@ const PokemonStackScreen = ({ navigation }) => {
 
 const Navigation = () => {
   const auth = getAuth();
-  const { pokemons } = useSelector((state) => state.USER);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
@@ -220,6 +220,7 @@ const Navigation = () => {
       setUserData(user);
 
       if (user) {
+        checkEnergy(user);
         readData({
           link: `users/${user.uid}`,
           successCallback: (snapshot) => {
@@ -264,7 +265,6 @@ const Navigation = () => {
             drawerActiveTintColor: "#fff",
             drawerInactiveTintColor: "#555",
             headerTitleAlign: "center",
-           
           }}
         >
           <Drawer.Screen
