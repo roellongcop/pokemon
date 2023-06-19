@@ -9,19 +9,23 @@ const slice = createSlice({
   },
   reducers: {
     setState: (state, action) => {
-      const { pokemons, count, next, previous } = action.payload;
-      state.pokemons = pokemons;
-      state.count = count;
-      state.next = next;
-      state.previous = previous;
+      if (action.payload) {
+        const { pokemons, count, next, previous } = action.payload;
+        state.pokemons = pokemons;
+        state.count = count;
+        state.next = next;
+        state.previous = previous;
+      }
     },
     next: (state, action) => {
-      const { pokemons, count, next, previous } = action.payload;
+      if (action.payload) {
+        const { pokemons, count, next, previous } = action.payload;
 
-      state.pokemons = [...state.pokemons, ...pokemons];
-      state.count = count;
-      state.next = next;
-      state.previous = previous;
+        state.pokemons = [...state.pokemons, ...pokemons];
+        state.count = count;
+        state.next = next;
+        state.previous = previous;
+      }
     },
   },
 });

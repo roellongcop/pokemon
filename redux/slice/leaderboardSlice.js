@@ -10,13 +10,16 @@ const slice = createSlice({
   },
   reducers: {
     setState: (state, action) => {
-      const { lastPokemonId, name, time, totalPokemons, uid } = action.payload;
+      if (action.payload) {
+        const { lastPokemonId, name, time, totalPokemons, uid } =
+          action.payload;
 
-      state.lastPokemonId = lastPokemonId || 0;
-      state.name = name || null;
-      state.time = time || 0;
-      state.totalPokemons = totalPokemons || 0;
-      state.uid = uid || null;
+        state.lastPokemonId = lastPokemonId || 0;
+        state.name = name || null;
+        state.time = time || 0;
+        state.totalPokemons = totalPokemons || 0;
+        state.uid = uid || null;
+      }
     },
   },
 });
