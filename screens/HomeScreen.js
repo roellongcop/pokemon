@@ -17,6 +17,7 @@ import PokemonImage from "../components/PokemonImage";
 import { Button, IconButton } from "react-native-paper";
 import { apiGet, apiUrl } from "../lib/api";
 import LastPokemonImage from "../components/LastPokemonImage";
+import { checkEnergy } from "../lib/user";
 
 const HomeScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -109,6 +110,8 @@ const HomeScreen = ({ navigation, route }) => {
 
   const handleRefresh = () => {
     setRefreshing(true);
+
+    checkEnergy(user);
     loadMyPokemons();
 
     loadPokemons();
