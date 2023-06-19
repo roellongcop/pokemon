@@ -6,6 +6,7 @@ import PokemonImage from "../components/PokemonImage";
 import { timeAgo } from "../lib/date";
 import { Badge } from "react-native-paper";
 import { checkEnergy } from "../lib/user";
+import { useSelector } from "react-redux";
 
 const LeaderBoardScreen = () => {
   const { user } = useSelector((state) => state.USER);
