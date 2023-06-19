@@ -18,6 +18,7 @@ const LeaderBoardScreen = () => {
 
   const handleRefresh = () => {
     setRefreshing(true);
+
     checkEnergy(user);
 
     setRefreshing(false);
