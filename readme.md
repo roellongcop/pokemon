@@ -1,5 +1,5 @@
 # Pokemon Catcher
-Pokemon Catcher is a simple mobile app that allows users to create an account and collect their own Pokemon. Upon registration, users will receive three starter Pokemon, and they can capture more by searching and catching Pokemon in the game. Users have three chances to catch Pokemon, which reset automatically every 5 minutes. The app also displays the current user with the highest number of Pokemon in their account.
+Pokemon Catcher is a user-friendly mobile application that enables individuals to establish an account and assemble their personal collection of Pokemon. After signing up, users will be provided with three initial Pokemon companions, and they can acquire additional ones by actively searching for and capturing Pokemon within the game. Each user is granted three opportunities to capture Pokemon, and these chances are refreshed automatically every 5 minutes. Moreover, the app prominently showcases the user currently holding the highest tally of Pokemon in their account.
 
 
 ## Working App
