@@ -1,20 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Text,
-  View,
-  SafeAreaView,
-  FlatList,
-  StyleSheet,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { Text, View, SafeAreaView, FlatList, StyleSheet } from "react-native";
 import { apiGet, apiUrl } from "../lib/api";
 import Pokemon from "../components/Pokemon";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Button,
-  IconButton,
-  Searchbar,
-} from "react-native-paper";
+import { Button, IconButton, Searchbar } from "react-native-paper";
 import { checkEnergy } from "../lib/user";
+import { addPokemonDetails } from "../lib/pokemon";
+import useScrollToTop from "../hooks/useScrollToTop";
+import { ACTION_TYPES } from "../constants";
 
 const PokemonListScreen = ({ navigation, route }) => {
   const { user } = useSelector((state) => state.USER);
@@ -25,46 +18,32 @@ const PokemonListScreen = ({ navigation, route }) => {
 
   const [segment, setSegment] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
-
   const [loadingMore, setLoadingMore] = useState(false);
-  const flatListRef = useRef(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [offset, setOffset] = useState(0);
-  const [scrollDirection, setScrollDirection] = useState("up");
 
-  const getPokemonDetails = async (url) => {
-    const result = await fetch(url);
-    const json = await result.json();
-
-    return json;
-  };
-
-  const addPokemonDetail = async (pokemons) => {
-    for (const key in pokemons) {
-      if (Object.hasOwnProperty.call(pokemons, key)) {
-        const pokemon = pokemons[key];
-        pokemons[key]["details"] = await getPokemonDetails(pokemon.url);
-      }
-    }
-
-    return pokemons;
-  };
+  const {
+    flatListRef,
+    offset,
+    scrollDirection,
+    handleScroll,
+    scrollToOffset,
+    showScrollToTop,
+  } = useScrollToTop();
 
   const loadPokemons = (callback = () => {}) => {
     apiGet(`${apiUrl}pokemon`, {
       success: async (data) => {
         if (data) {
           const { count, next, previous, results } = data;
-
-          const pokemons = await addPokemonDetail(results);
+          const pokemonsWithDetails = await addPokemonDetails(results);
 
           dispatch({
-            type: "pokemon/setState",
+            type: ACTION_TYPES.POKEMON.SET_STATE,
             payload: {
               count,
               next,
               previous,
-              pokemons,
+              pokemons: pokemonsWithDetails,
             },
           });
         }
@@ -88,18 +67,6 @@ const PokemonListScreen = ({ navigation, route }) => {
     });
   };
 
-  const handleScroll = (event) => {
-    const { contentOffset } = event.nativeEvent;
-    const { y } = contentOffset;
-
-    if (y > offset) {
-      setScrollDirection("down");
-    } else {
-      setScrollDirection("up");
-    }
-    setOffset(y);
-  };
-
   useEffect(() => {
     setRefreshing(true);
     loadPokemons(() => {
@@ -114,11 +81,6 @@ const PokemonListScreen = ({ navigation, route }) => {
 
     return values.some((value) => value.includes(searchTerm.toLowerCase()));
   });
-  const scrollToOffset = (offset) => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToOffset({ offset: offset, animated: true });
-    }
-  };
 
   const loadMore = () => {
     setLoadingMore(true);
@@ -126,16 +88,15 @@ const PokemonListScreen = ({ navigation, route }) => {
       success: async (data) => {
         if (data) {
           const { count, next, previous, results } = data;
-
-          const pokemons = await addPokemonDetail(results);
+          const pokemonsWithDetails = await addPokemonDetails(results);
 
           dispatch({
-            type: "pokemon/next",
+            type: ACTION_TYPES.POKEMON.NEXT,
             payload: {
               count,
               next,
               previous,
-              pokemons,
+              pokemons: pokemonsWithDetails,
             },
           });
         }
@@ -251,15 +212,15 @@ const PokemonListScreen = ({ navigation, route }) => {
         ListFooterComponent={renderFooter}
       />
 
-      {scrollDirection == "down" && offset ? (
+      {showScrollToTop && (
         <IconButton
           icon="arrow-up"
           mode="contained"
           size={30}
           style={{ position: "absolute", bottom: 10, right: 20 }}
-          onPress={() => scrollToOffset(1)}
+          onPress={() => scrollToOffset(0)}
         />
-      ) : null}
+      )}
     </SafeAreaView>
   );
 };

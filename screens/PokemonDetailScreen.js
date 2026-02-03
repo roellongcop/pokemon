@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import PokemonImage from "../components/PokemonImage";
 import {
   ImageBackground,
@@ -21,6 +21,13 @@ import { pushData, readData, setData } from "../firebaseConfig";
 import { useSelector } from "react-redux";
 import { StatusBar } from "expo-status-bar";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { getTypeImage } from "../lib/imageMapper";
+import {
+  getUserPokemonPath,
+  getUserEnergyPath,
+  getUserDetailsPath,
+  FIREBASE_PATHS,
+} from "../constants";
 
 const PokemonDetailScreen = ({ navigation, route }) => {
   const {
@@ -35,64 +42,16 @@ const PokemonDetailScreen = ({ navigation, route }) => {
   const [capturing, setCapturing] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [captureRate, setCaptureRate] = useState("");
-  const [imageSource, setImageSource] = useState(
-    require("../assets/water.png")
-  );
-
   const [captureSuccess, setCaptureSuccess] = useState(false);
   const [captureFailed, setCaptureFailed] = useState(false);
+
+  const imageSource = useMemo(() => getTypeImage(type), [type]);
 
   const handleRefresh = () => {
     setRefreshing(true);
     checkEnergy(user);
-    updateImageSource();
     setIndex(0);
     setRefreshing(false);
-  };
-
-  const updateImageSource = () => {
-    switch (type) {
-      case "normal":
-        setImageSource(require("../assets/normal.png"));
-        break;
-
-      case "fighting":
-      case "ghost":
-      case "unknown":
-        setImageSource(require("../assets/fighting.png"));
-        break;
-      case "water":
-      case "flying":
-      case "electric":
-      case "ice":
-        setImageSource(require("../assets/water.png"));
-        break;
-
-      case "fire":
-      case "steel":
-      case "dragon":
-        setImageSource(require("../assets/fire.png"));
-        break;
-
-      case "grass":
-      case "psychic":
-      case "fairy":
-        setImageSource(require("../assets/grass.png"));
-        break;
-
-      case "bug":
-      case "poison":
-      case "ground":
-      case "rock":
-      case "shadow":
-
-      case "dark":
-        setImageSource(require("../assets/bug.png"));
-        break;
-
-      default:
-        break;
-    }
   };
 
   const getCaptureRate = () => {
@@ -115,7 +74,6 @@ const PokemonDetailScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     getCaptureRate();
-    updateImageSource();
   }, []);
 
   const layout = useWindowDimensions();
@@ -230,51 +188,48 @@ const PokemonDetailScreen = ({ navigation, route }) => {
 
     setTimeout(() => {
       const randomNumber = Math.floor(Math.random() * 2) + 1;
+      const newEnergy = {
+        chance: energy.chance === 0 ? 0 : energy.chance - 1,
+        time: new Date().getTime(),
+      };
+      const displayName =
+        user?.displayName || userDetails?.name || user.email.split("@")[0];
 
-      if (randomNumber == 2) {
+      if (randomNumber === 2) {
         const newPokemonLength = pokemons.length + 1;
         pushData({
-          link: `users/${user.uid}/pokemon`,
+          link: getUserPokemonPath(user.uid),
           data: details.id,
           successCallback: () => {
             setCaptureSuccess(true);
             setCapturing(false);
 
             setData({
-              link: `users/${user.uid}/energy`,
-              data: {
-                chance: energy.chance == 0 ? 0 : energy.chance - 1,
-                time: new Date().getTime(),
-              },
+              link: getUserEnergyPath(user.uid),
+              data: newEnergy,
             });
 
             setData({
-              link: `users/${user.uid}/details`,
+              link: getUserDetailsPath(user.uid),
               data: {
                 lastPokemonId: details.id,
                 totalPokemons: newPokemonLength,
                 uid: user?.uid,
-                name:
-                  user?.displayName ||
-                  userDetails?.name ||
-                  user.email.split("@")[0],
+                name: displayName,
               },
             });
 
             readData({
-              link: "leaderboard",
+              link: FIREBASE_PATHS.LEADERBOARD,
               successCallback: (snapshot) => {
                 if (snapshot && snapshot.val()) {
                   const leaderboard = snapshot.val();
                   if (leaderboard.totalPokemons < newPokemonLength) {
                     setData({
-                      link: "leaderboard",
+                      link: FIREBASE_PATHS.LEADERBOARD,
                       data: {
                         uid: user?.uid,
-                        name:
-                          user?.displayName ||
-                          userDetails?.name ||
-                          user.email.split("@")[0],
+                        name: displayName,
                         lastPokemonId: details.id,
                         totalPokemons: newPokemonLength,
                         time: new Date().getTime(),
@@ -294,11 +249,8 @@ const PokemonDetailScreen = ({ navigation, route }) => {
         setCaptureFailed(true);
         setCapturing(false);
         setData({
-          link: `users/${user.uid}/energy`,
-          data: {
-            chance: energy.chance == 0 ? 0 : energy.chance - 1,
-            time: new Date().getTime(),
-          },
+          link: getUserEnergyPath(user.uid),
+          data: newEnergy,
         });
       }
     }, 3000);

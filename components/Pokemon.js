@@ -1,67 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { View, Text, ImageBackground, StyleSheet } from "react-native";
 import PokemonImage from "./PokemonImage";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { getTypeImage } from "../lib/imageMapper";
 
 const Pokemon = React.memo(({ pokemon, viewOnly }) => {
   const navigation = useNavigation();
   const { details } = pokemon;
   const type = details.types[0].type.name;
 
-  const [imageSource, setImageSource] = useState(
-    require("../assets/water.png")
-  );
-
-  // Function to handle image source update
-  const updateImageSource = () => {
-    switch (type) {
-      case "normal":
-        setImageSource(require("../assets/normal.png"));
-        break;
-
-      case "fighting":
-      case "ghost":
-      case "unknown":
-        setImageSource(require("../assets/fighting.png"));
-        break;
-      case "water":
-      case "flying":
-      case "electric":
-      case "ice":
-        setImageSource(require("../assets/water.png"));
-        break;
-
-      case "fire":
-      case "steel":
-      case "dragon":
-        setImageSource(require("../assets/fire.png"));
-        break;
-
-      case "grass":
-      case "psychic":
-      case "fairy":
-        setImageSource(require("../assets/grass.png"));
-        break;
-
-      case "bug":
-      case "poison":
-      case "ground":
-      case "rock":
-      case "shadow":
-
-      case "dark":
-        setImageSource(require("../assets/bug.png"));
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  useEffect(() => {
-    updateImageSource();
-  }, []);
+  const imageSource = useMemo(() => getTypeImage(type), [type]);
 
   const renderStats = (stat, index) => {
     if (stat.stat.name == "special-attack") {

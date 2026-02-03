@@ -1,61 +1,41 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { firebaseSubscribe } from "../firebaseConfig";
 import PokemonImage from "../components/PokemonImage";
 import { timeAgo } from "../lib/date";
-import { Badge } from "react-native-paper";
+import { Badge, IconButton } from "react-native-paper";
 import { checkEnergy } from "../lib/user";
 import { useSelector } from "react-redux";
+import useScrollToTop from "../hooks/useScrollToTop";
+import { FIREBASE_PATHS } from "../constants";
 
 const LeaderBoardScreen = () => {
   const { user } = useSelector((state) => state.USER);
   const [leaderboards, setLeaderboards] = useState([]);
-
-  const flatListRef = useRef(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [offset, setOffset] = useState(0);
-  const [scrollDirection, setScrollDirection] = useState("up");
+
+  const {
+    flatListRef,
+    handleScroll,
+    scrollToOffset,
+    showScrollToTop,
+  } = useScrollToTop();
 
   const handleRefresh = () => {
     setRefreshing(true);
-
     checkEnergy(user);
-
     setRefreshing(false);
   };
 
-  const handleScroll = (event) => {
-    const { contentOffset } = event.nativeEvent;
-    const { y } = contentOffset;
-
-    if (y > offset) {
-      setScrollDirection("down");
-    } else {
-      setScrollDirection("up");
-    }
-    setOffset(y);
-  };
-
-  const scrollToOffset = (offset) => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToOffset({ offset: offset, animated: true });
-    }
-  };
-
   useEffect(() => {
-    firebaseSubscribe("users", (snapshot) => {
+    firebaseSubscribe(FIREBASE_PATHS.USERS, (snapshot) => {
       if (snapshot) {
         const users = snapshot.val();
-
-        const leaderboards = Object.values(users || []);
-
-        // Sort the users array based on the pokemonCount in descending order
-        leaderboards.sort(
+        const sortedLeaderboards = Object.values(users || []).sort(
           (a, b) => b.details.totalPokemons - a.details.totalPokemons
         );
-
-        setLeaderboards(leaderboards || []);
+        setLeaderboards(sortedLeaderboards);
       }
     });
   }, []);
@@ -96,15 +76,15 @@ const LeaderBoardScreen = () => {
         keyExtractor={(item, index) => index.toString()}
       />
 
-      {scrollDirection == "down" && offset ? (
+      {showScrollToTop && (
         <IconButton
           icon="arrow-up"
           mode="contained"
           size={30}
           style={{ position: "absolute", bottom: 10, right: 20 }}
-          onPress={() => scrollToOffset(1)}
+          onPress={() => scrollToOffset(0)}
         />
-      ) : null}
+      )}
     </View>
   );
 };

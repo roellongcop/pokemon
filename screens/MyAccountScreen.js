@@ -3,7 +3,6 @@ import { StatusBar } from "expo-status-bar";
 import { useSelector } from "react-redux";
 import { timeAgo } from "../lib/date";
 import PokemonImage from "../components/PokemonImage";
-import { apiUrl } from "../lib/api";
 import {
   SafeAreaView,
   RefreshControl,
@@ -16,8 +15,9 @@ import {
 } from "react-native";
 import { checkEnergy } from "../lib/user";
 import { Button } from "react-native-paper";
-import { auth, updateProfile } from "../firebaseConfig";
-import { setData } from "../firebaseConfig";
+import { auth, updateProfile, setData } from "../firebaseConfig";
+import { getPokemonById } from "../lib/pokemon";
+import { getUserDetailsPath } from "../constants";
 
 const MyAccountScreen = () => {
   const { user, pokemons, energy, details } = useSelector((state) => state.USER);
@@ -28,18 +28,16 @@ const MyAccountScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const getPokemonDetails = async (url) => {
-    const result = await fetch(url);
-    const json = await result.json();
-
-    return json;
-  };
-
   const getLastPokemon = async () => {
     const pokemonId = pokemons[pokemons.length - 1];
-    const details = await getPokemonDetails(`${apiUrl}pokemon/${pokemonId}`);
-
-    setLastPokemon(details);
+    if (pokemonId) {
+      try {
+        const details = await getPokemonById(pokemonId);
+        setLastPokemon(details);
+      } catch (error) {
+        console.error("Error fetching last pokemon:", error);
+      }
+    }
   };
 
   const handleRefresh = () => {
@@ -58,7 +56,7 @@ const MyAccountScreen = () => {
     })
       .then(() => {
         setData({
-          link: `users/${currentUser.uid}/details/name`,
+          link: `${getUserDetailsPath(currentUser.uid)}/name`,
           data: name,
           successCallback: () => {
             Alert.alert("Success", "Successfully updated Name");

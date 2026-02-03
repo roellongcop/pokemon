@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   ImageBackground,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { StatusBar } from "expo-status-bar";
@@ -19,6 +19,8 @@ import { Button, IconButton } from "react-native-paper";
 import { apiGet, apiUrl } from "../lib/api";
 import LastPokemonImage from "../components/LastPokemonImage";
 import { checkEnergy } from "../lib/user";
+import { getPokemonById, addPokemonDetails } from "../lib/pokemon";
+import { ACTION_TYPES, getUserPokemonPath } from "../constants";
 
 const HomeScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -31,43 +33,24 @@ const HomeScreen = ({ navigation, route }) => {
   const [wildPokemons, setWildPokemons] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  const populateMyPokemons = async (pokemons) => {
-    let result = [];
+  const populateMyPokemons = async (pokemonsList) => {
+    const result = [];
+    const recentPokemons = pokemonsList.slice(-3);
 
-    for (let i = pokemons.length - 3; i < pokemons.length; i++) {
-      const pokemonId = pokemons[i];
-
+    for (const pokemonId of recentPokemons) {
       try {
-        const details = await getPokemonDetails(
-          `${apiUrl}pokemon/${pokemonId}`
-        );
+        const details = await getPokemonById(pokemonId);
         result.push({
           name: details.name,
           id: details.id,
           details,
         });
-      } catch (error) {}
-    }
-
-    setMyPokemons(result);
-  };
-
-  const getPokemonDetails = async (url) => {
-    const result = await fetch(url);
-    const json = await result.json();
-
-    return json;
-  };
-
-  const addPokemonDetail = async (pokemons) => {
-    for (const key in pokemons) {
-      if (Object.hasOwnProperty.call(pokemons, key)) {
-        const pokemon = pokemons[key];
-        pokemons[key]["details"] = await getPokemonDetails(pokemon.url);
+      } catch (error) {
+        console.error("Error fetching pokemon details:", error);
       }
     }
 
-    return pokemons;
+    setMyPokemons(result);
   };
 
   const loadPokemons = (callback = () => {}) => {
@@ -75,10 +58,8 @@ const HomeScreen = ({ navigation, route }) => {
       success: async (data) => {
         if (data) {
           const { results } = data;
-
-          const pokemons = await addPokemonDetail(results);
-
-          setWildPokemons(pokemons);
+          const pokemonsWithDetails = await addPokemonDetails(results);
+          setWildPokemons(pokemonsWithDetails);
         }
         callback(data);
       },
@@ -93,14 +74,12 @@ const HomeScreen = ({ navigation, route }) => {
 
   const loadMyPokemons = () => {
     readData({
-      link: `users/${user.uid}/pokemon`,
+      link: getUserPokemonPath(user.uid),
       successCallback: (snapshot) => {
         if (snapshot) {
           const pokemon = snapshot.val() || [];
-
           populateMyPokemons(pokemon ? Object.values(pokemon) : []);
         }
-
         setRefreshing(false);
       },
       errorCallback: () => {
@@ -125,7 +104,7 @@ const HomeScreen = ({ navigation, route }) => {
 
     firebaseSubscribe("leaderboard", (snapshot) => {
       if (snapshot) {
-        dispatch({ type: "leadboard/setState", payload: snapshot.val() });
+        dispatch({ type: ACTION_TYPES.LEADERBOARD.SET_STATE, payload: snapshot.val() });
       }
     });
 

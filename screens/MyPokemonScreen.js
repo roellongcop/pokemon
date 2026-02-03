@@ -1,43 +1,42 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View, SafeAreaView, FlatList, StyleSheet } from "react-native";
-import { apiUrl } from "../lib/api";
 import Pokemon from "../components/Pokemon";
 import { useSelector } from "react-redux";
 import { IconButton, Searchbar } from "react-native-paper";
 import { checkEnergy } from "../lib/user";
+import { getPokemonById } from "../lib/pokemon";
+import useScrollToTop from "../hooks/useScrollToTop";
 
 const MyPokemonScreen = ({ navigation, route }) => {
   const { user, pokemons } = useSelector((state) => state.USER);
   const [myPokemons, setMyPokemons] = useState([]);
-
   const [refreshing, setRefreshing] = useState(false);
-  const [offset, setOffset] = useState(0);
-  const [scrollDirection, setScrollDirection] = useState("up");
   const [searchTerm, setSearchTerm] = useState("");
-  const flatListRef = useRef(null);
+
+  const {
+    flatListRef,
+    handleScroll,
+    scrollToOffset,
+    showScrollToTop,
+  } = useScrollToTop();
 
   useEffect(() => {
     loadPokemons();
   }, [pokemons]);
 
-  const getPokemonDetails = async (url) => {
-    const result = await fetch(url);
-    const json = await result.json();
-
-    return json;
-  };
-
   const loadPokemons = async (callback = () => {}) => {
-    let result = [];
+    const result = [];
 
-    for (let index = 0; index < pokemons.length; index++) {
-      const pokemonId = pokemons[index];
-
-      const details = await getPokemonDetails(`${apiUrl}pokemon/${pokemonId}`);
-      result.push({
-        name: details.name,
-        details: details,
-      });
+    for (const pokemonId of pokemons) {
+      try {
+        const details = await getPokemonById(pokemonId);
+        result.push({
+          name: details.name,
+          details: details,
+        });
+      } catch (error) {
+        console.error("Error fetching pokemon:", error);
+      }
     }
 
     setMyPokemons(result.reverse());
@@ -59,24 +58,6 @@ const MyPokemonScreen = ({ navigation, route }) => {
     loadPokemons(() => {
       setRefreshing(false);
     });
-  };
-
-  const handleScroll = (event) => {
-    const { contentOffset } = event.nativeEvent;
-    const { y } = contentOffset;
-
-    if (y > offset) {
-      setScrollDirection("down");
-    } else {
-      setScrollDirection("up");
-    }
-    setOffset(y);
-  };
-
-  const scrollToOffset = (offset) => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToOffset({ offset: offset, animated: true });
-    }
   };
 
   return (
@@ -111,15 +92,15 @@ const MyPokemonScreen = ({ navigation, route }) => {
         keyExtractor={(item, index) => index.toString()}
       />
 
-      {scrollDirection == "down" && offset ? (
+      {showScrollToTop && (
         <IconButton
           icon="arrow-up"
           mode="contained"
           size={30}
           style={{ position: "absolute", bottom: 10, right: 20 }}
-          onPress={() => scrollToOffset(1)}
+          onPress={() => scrollToOffset(0)}
         />
-      ) : null}
+      )}
     </SafeAreaView>
   );
 };
